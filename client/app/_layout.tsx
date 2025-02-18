@@ -1,9 +1,10 @@
 import { Stack } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 
-import "./globals.css";
+import "./global.css";
 import {useFonts} from "expo-font";
 import { useEffect } from "react";
+
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),

@@ -16,12 +16,12 @@ module.exports = {
       },
       colors:{
         primary: {
-          100: '#DFF2EB', // Lightest shade
-          200: '#B9E5E8', // Light
-          300: '#7AB2D3', // Primary color
+          100: '#4A628A0A', // Lightest shade
+          200: '#4A628A1A', // Light
+          300: '#4A628A', // Primary color
         },
         accent: {
-          100: '#A1B5C6', // Lightest accent shade
+          100: '#DFF2EB', // Lightest accent shade
           200: '#6F8DAB', // Light accent
           300: '#4A628A', // Accent color
         },
