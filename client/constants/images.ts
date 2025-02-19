@@ -9,8 +9,12 @@ import map from "@/assets/images/map.png";
 import noResult from "@/assets/images/no-result.png";
 import onboarding1 from "@/assets/images/onboarding1.png";
 import load from "@/assets/images/load.gif";
+import background from "@/assets/images/background.png";
+import light from "@/assets/images/light.png";
 
 export default {
+  light,
+  background,
   load,
   onboarding1,
   onboarding,
