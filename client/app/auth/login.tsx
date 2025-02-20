@@ -7,6 +7,8 @@ import {useRouter} from "expo-router";
 
 const Login = () => {
     const router = useRouter();
+
+
     return (
         <View className="bg-white h-full w-full">
             <StatusBar style="light" />

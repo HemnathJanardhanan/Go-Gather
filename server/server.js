@@ -1,18 +1,23 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
+import rsvpRoutes from "./routes/rsvpRoutes.js";
 
 dotenv.config();
+connectDB(); // Connect to MongoDB
 
 const app = express();
-
-// Middleware
+app.use(express.json());
 app.use(cors());
-app.use(express.json()); // for parsing JSON payloads
 
-// Example route
-app.get('/', (req, res) => res.send('Hello from Backend!'));
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/rsvp", rsvpRoutes);
+app.use("/api/users", authRoutes);
 
-// Port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
