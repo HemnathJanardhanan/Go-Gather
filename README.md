@@ -1,6 +1,4 @@
-
-
-# 📝 **Go-Gather**
+# 🍚 **Go-Gather**
 
 ## 🎯 Overview
 
@@ -14,7 +12,7 @@ Go-Gather is a mobile application designed to help users discover, RSVP to, and 
 - 📍 **Geolocation**: View events near you using interactive maps and geofencing.
 - 👤 **User Profiles**: View past RSVPs, manage settings, and more.
 
-## 📦 **Installation & Setup**
+## 🛋️ **Installation & Setup**
 
 ### Frontend (Client)
 
@@ -34,7 +32,18 @@ cd client
 npm install
 ```
 
-3. **Start the Expo App:**
+3. **Set API_URL for Authentication:**
+
+In order for **signup and login functionality** to work correctly, update the `API_URL` inside `login.tsx` and `signup.tsx` to match your backend server URL.
+
+Example:
+```js
+const API_URL = "http://YOUR_LOCAL_IP:3000/api/auth/login"; // For Login
+const API_URL = "http://YOUR_LOCAL_IP:3000/api/auth/signup"; // For Signup
+```
+Replace `YOUR_LOCAL_IP` with the correct IP address of your backend server.
+
+4. **Start the Expo App:**
 
 Once dependencies are installed, start the application using Expo:
 
