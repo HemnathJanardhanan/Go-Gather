@@ -1,11 +1,14 @@
 import { Stack } from "expo-router";
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from "expo-splash-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
+import { useFonts } from "expo-font";
 
 import "./global.css";
-import {useFonts} from "expo-font";
-import { useEffect } from "react";
 
 export default function RootLayout() {
+  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+
   const [fontsLoaded] = useFonts({
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
     "Nunito-Medium": require("../assets/fonts/Nunito-Medium.ttf"),
@@ -14,15 +17,36 @@ export default function RootLayout() {
     "Nunito-ExtraLight": require("../assets/fonts/Nunito-ExtraLight.ttf"),
     "Nunito-SemiBold": require("../assets/fonts/Nunito-SemiBold.ttf"),
     "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
-
   });
-  useEffect(()=>{
-    if(fontsLoaded){
+
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
+      if (hasSeenWelcome === null) {
+        await AsyncStorage.setItem("hasSeenWelcome", "true");
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    };
+
+    checkFirstLaunch();
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  },[fontsLoaded]);
-    if(!fontsLoaded){
-      return null;
-    }
-  return <Stack screenOptions={{headerShown:false}}/>
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded || isFirstLaunch === null) {
+    return null; // Prevent rendering until check is done
+  }
+
+  return (
+      <Stack
+          screenOptions={{ headerShown: false }}
+          initialRouteName={"auth/welcome"}
+      />
+  );
 }

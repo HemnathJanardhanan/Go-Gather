@@ -4,8 +4,12 @@ import User from "../models/User.js";
 // 📌 Create Event
 export const createEvent = async (req, res) => {
     try {
-        const { title, description, location, date, image } = req.body;
+        const { title, description, location, date, image, noOfSeats } = req.body;
         const userId = req.user; // Extracted from authMiddleware
+
+        if (!noOfSeats || noOfSeats < 1) {
+            return res.status(400).json({ error: "Number of seats must be at least 1" });
+        }
 
         const newEvent = new Event({
             title,
@@ -13,6 +17,7 @@ export const createEvent = async (req, res) => {
             location,
             date,
             image,
+            noOfSeats,  // Added to schema
             createdBy: userId,
             attendees: [],
         });
@@ -24,6 +29,7 @@ export const createEvent = async (req, res) => {
 
         res.status(201).json(newEvent);
     } catch (error) {
+        console.error("Error creating event:", error);
         res.status(500).json({ error: "Failed to create event" });
     }
 };
@@ -34,6 +40,7 @@ export const getEvents = async (req, res) => {
         const events = await Event.find().populate("createdBy", "name profilePhoto");
         res.json(events);
     } catch (error) {
+        console.error("Error fetching events:", error);
         res.status(500).json({ error: "Failed to fetch events" });
     }
 };
@@ -46,6 +53,7 @@ export const getEventById = async (req, res) => {
 
         res.json(event);
     } catch (error) {
+        console.error("Error fetching event:", error);
         res.status(500).json({ error: "Failed to fetch event" });
     }
 };
@@ -61,9 +69,14 @@ export const updateEvent = async (req, res) => {
             return res.status(403).json({ error: "Unauthorized to update this event" });
         }
 
+        if (req.body.noOfSeats && req.body.noOfSeats < 1) {
+            return res.status(400).json({ error: "Number of seats must be at least 1" });
+        }
+
         const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedEvent);
     } catch (error) {
+        console.error("Error updating event:", error);
         res.status(500).json({ error: "Failed to update event" });
     }
 };
@@ -86,10 +99,10 @@ export const deleteEvent = async (req, res) => {
 
         res.json({ message: "Event deleted successfully" });
     } catch (error) {
+        console.error("Error deleting event:", error);
         res.status(500).json({ error: "Failed to delete event" });
     }
 };
-
 
 // 📌 Get My Hosted Events
 export const getMyHostedEvents = async (req, res) => {
@@ -101,6 +114,7 @@ export const getMyHostedEvents = async (req, res) => {
 
         res.json({ hostedEvents });
     } catch (error) {
+        console.error("Error fetching hosted events:", error);
         res.status(500).json({ error: "Failed to fetch hosted events" });
     }
 };

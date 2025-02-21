@@ -16,9 +16,9 @@ module.exports = {
       },
       colors:{
         primary: {
-          100: '#0061ff0A', // Lightest shade
-          200: '#0061ff1A', // Light
-          300: '#0061ff2A', // Primary color
+          100: '#0061FF0A', // Lightest shade
+          200: '#0061FF1A', // Light
+          300: '#0061FF', // Primary color
         },
         accent: {
           100: '#FBFBFD', // Lightest accent shade

@@ -6,6 +6,7 @@ const EventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     date: { type: Date, required: true },
     image: [{ type: String, required: true }],
+    noOfSeats: { type: Number, required: true },  // Added noOfSeats field
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 }, { timestamps: true });

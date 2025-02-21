@@ -1,14 +1,48 @@
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native'
-import React from 'react'
+import {View, Text, Image, TextInput, TouchableOpacity,Alert} from 'react-native'
+import React,{useState} from 'react'
+import axios from "axios";
 import images from "@/constants/images";
 import {StatusBar} from 'expo-status-bar'
-import Animated, {FadeIn, FadeInDown, FadeInUp, FadeOut} from "react-native-reanimated";
+import Animated, {FadeInDown, FadeInUp} from "react-native-reanimated";
 import {useRouter} from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_URL = "http://192.168.29.133:3000/api/auth/login"; // Replace with your local IP
 
 const Login = () => {
     const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Error", "Please enter both email and password");
+            return;
+        }
 
+        setLoading(true);
+        try {
+            const response = await axios.post(API_URL, { email, password });
 
+            await AsyncStorage.setItem("token", response.data.token);
+            await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
+            await AsyncStorage.setItem("hasSeenWelcome", "true");
+            Alert.alert("Success", "Login successful!");
+
+            router.replace("/(tabs)");
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error("Login Error:", error.response?.data || error.message);
+                Alert.alert("Login Failed", error.response?.data?.error || "Invalid credentials");
+            } else {
+                console.error("Unexpected Error:", error);
+                Alert.alert("Login Failed", "Something went wrong. Please try again.");
+            }
+        } finally {
+            setLoading(false);
+        }
+
+    }
     return (
         <View className="bg-white h-full w-full">
             <StatusBar style="light" />
@@ -30,15 +64,15 @@ const Login = () => {
                 {/*form*/}
                 <View className="flex items-center mx-4 space-y-4">
                     <Animated.View entering={FadeInDown.duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-3">
-                        <TextInput placeholder='Email' placeholderTextColor={'gray'}/>
+                        <TextInput placeholder='Email' placeholderTextColor={'gray'} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address"/>
                     </Animated.View>
                     <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-4">
-                        <TextInput placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={true}/>
+                        <TextInput placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={true} value={password} onChangeText={setPassword}/>
                     </Animated.View>
 
                     <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="w-full" >
-                        <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3">
-                            <Text className="text-white text-xl font-nunito-bold text-center">Login</Text>
+                        <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3" onPress={handleLogin} disabled={loading}>
+                            <Text className="text-white text-xl font-nunito-bold text-center">{loading ? "Logging in..." : "Login"}</Text>
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View entering={FadeInDown.delay(600).duration(1000).springify()} className="flex-row justify-center">
