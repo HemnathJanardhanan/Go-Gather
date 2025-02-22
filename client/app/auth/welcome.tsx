@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import images from "@/constants/images"; // Import logo
 
-const WelcomeScreen = () => {
+const Welcome = () => {
     const router = useRouter();
 
     return (
@@ -29,4 +29,4 @@ const WelcomeScreen = () => {
     );
 };
 
-export default WelcomeScreen;
+export default Welcome;

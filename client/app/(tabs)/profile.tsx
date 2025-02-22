@@ -31,15 +31,19 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user");
-      await AsyncStorage.setItem("hasSeenWelcome", "false"); // Reset welcome flag
+      await AsyncStorage.multiRemove(["token", "user"]);
+      await AsyncStorage.setItem("hasSeenWelcome", "false");
+
+      const token = await AsyncStorage.getItem("token"); // Check if it's removed
+      console.log("Token after logout:", token); // Should be null
+
       router.replace("/auth/welcome");
     } catch (error) {
       console.error("Logout Error:", error);
       Alert.alert("Error", "Failed to logout. Try again.");
     }
   };
+
 
 
   return (
