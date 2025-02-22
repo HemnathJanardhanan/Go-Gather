@@ -37,7 +37,7 @@ const Profile = () => {
       const token = await AsyncStorage.getItem("token"); // Check if it's removed
       console.log("Token after logout:", token); // Should be null
 
-      router.replace("/auth/welcome");
+      router.replace("../index");
     } catch (error) {
       console.error("Logout Error:", error);
       Alert.alert("Error", "Failed to logout. Try again.");

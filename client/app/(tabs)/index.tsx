@@ -15,6 +15,8 @@ export default function Index() {
             data={cards}
             renderItem={({ item }) => (
                 <Cards
+                
+                    id={item.id}
                     title={item.title}
                     location={item.location}
                     price={item.price}
@@ -58,6 +60,7 @@ export default function Index() {
                       data={featuredCards}
                       renderItem={({ item }) => (
                           <FeaturedCard
+                              id={item.id}
                               title={item.title}
                               location={item.location}
                               price={item.price}

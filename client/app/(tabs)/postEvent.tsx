@@ -7,7 +7,7 @@ import {useRouter} from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const API_URL = "http://192.168.29.133:3000/api/events"; // Replace with your backend URL
+const API_URL = "http://192.168.29.178:3000/api/events"; // Replace with your backend URL
 
 const EventForm = () => {
   const router = useRouter();

@@ -7,7 +7,7 @@ import Animated, {FadeInDown, FadeInUp} from "react-native-reanimated";
 import {useRouter} from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = "http://192.168.29.133:3000/api/auth/login"; // Replace with your local IP
+const API_URL = "http://192.168.29.178:3000/api/auth/login"; // Replace with your local IP
 
 const Login = () => {
     const router = useRouter();

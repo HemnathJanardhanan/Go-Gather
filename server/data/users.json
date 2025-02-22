@@ -1,0 +1,9 @@
+[
+  {
+    "id": "1740230771608",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "$2b$10$23gp0HR6qf3uf38D32/DW.EFV7TdEffkAiWaWcLGqECwE.KCIYoVS",
+    "bookedEvents": []
+  }
+]

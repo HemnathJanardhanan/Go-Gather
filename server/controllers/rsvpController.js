@@ -1,65 +1,60 @@
-import Event from "../models/Event.js";
-import User from "../models/User.js";
+import { readData, writeData } from "../utils/fileUtils.js";
 
-// 📌 RSVP to an Event
+// controllers/rsvpController.js
 export const rsvpEvent = async (req, res) => {
-    try {
-        const { eventId } = req.params;
-        const userId = req.user;
+    const rsvps = await readData("rsvps.json");
+    const events = await readData("events.json");
+    const users = await readData("users.json");
+    const { eventId, seats } = req.params;
 
-        const event = await Event.findById(eventId);
-        if (!event) return res.status(404).json({ error: "Event not found" });
+    const event = events.find(e => e.id === eventId);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+    if (event.noOfSeats < seats) return res.status(400).json({ error: "Not enough seats available" });
 
-        // Check if already RSVP'd
-        if (event.attendees.includes(userId)) {
-            return res.status(400).json({ error: "Already RSVP'd to this event" });
-        }
-
-        // Add user to event attendees list
-        event.attendees.push(userId);
-        await event.save();
-
-        // Add event to user's bookedEvents list
-        await User.findByIdAndUpdate(userId, { $push: { bookedEvents: eventId } });
-
-        res.json({ message: "RSVP successful", event });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to RSVP" });
+    if (rsvps.find(r => r.eventId === eventId && r.userId === req.user)) {
+        return res.status(400).json({ error: "Already RSVP'd" });
     }
+
+    event.noOfSeats -= seats;
+    event.attendees.push({ userId: req.user, seats });
+    await writeData("events.json", events);
+
+    const user = users.find(u => u.id === req.user);
+    user.bookedEvents.push({ eventId, seats });
+    await writeData("users.json", users);
+
+    rsvps.push({ id: Date.now().toString(), eventId, userId: req.user, seats });
+    await writeData("rsvps.json", rsvps);
+
+    res.status(201).json({ message: "RSVP successful" });
 };
 
-// 📌 Cancel RSVP
 export const cancelRsvp = async (req, res) => {
-    try {
-        const { eventId } = req.params;
-        const userId = req.user;
+    const rsvps = await readData("rsvps.json");
+    const events = await readData("events.json");
+    const users = await readData("users.json");
+    const { eventId } = req.params;
 
-        const event = await Event.findById(eventId);
-        if (!event) return res.status(404).json({ error: "Event not found" });
+    const rsvpIndex = rsvps.findIndex(r => r.eventId === eventId && r.userId === req.user);
+    if (rsvpIndex === -1) return res.status(400).json({ error: "RSVP not found" });
 
-        // Remove user from attendees list
-        event.attendees = event.attendees.filter(att => att.toString() !== userId);
-        await event.save();
+    const seats = rsvps[rsvpIndex].seats;
+    rsvps.splice(rsvpIndex, 1);
+    await writeData("rsvps.json", rsvps);
 
-        // Remove event from user's bookedEvents list
-        await User.findByIdAndUpdate(userId, { $pull: { bookedEvents: eventId } });
-
-        res.json({ message: "RSVP canceled", event });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to cancel RSVP" });
+    const event = events.find(e => e.id === eventId);
+    if (event) {
+        event.noOfSeats += seats;
+        event.attendees = event.attendees.filter(a => a.userId !== req.user);
+        await writeData("events.json", events);
     }
+
+    const user = users.find(u => u.id === req.user);
+    if (user) {
+        user.bookedEvents = user.bookedEvents.filter(e => e.eventId !== eventId);
+        await writeData("users.json", users);
+    }
+
+    res.json({ message: "RSVP cancelled" });
 };
 
-export const getMyBookedEvents = async (req, res) => {
-    try {
-        const userId = req.user;
-
-        // Find user and populate the booked events
-        const user = await User.findById(userId).populate("bookedEvents");
-        if (!user) return res.status(404).json({ error: "User not found" });
-
-        res.json({ bookedEvents: user.bookedEvents });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch booked events" });
-    }
-};

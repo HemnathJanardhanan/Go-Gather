@@ -1,13 +1,13 @@
 import express from "express";
-import authMiddleware from "../middlewares/authMiddleware.js";
-import { rsvpEvent, cancelRsvp,getMyBookedEvents } from "../controllers/rsvpController.js";
+import {authenticate} from "../middlewares/authenticate.js";
+import { rsvpEvent, cancelRsvp} from "../controllers/rsvpController.js";
 
 const router = express.Router();
 
 // 📌 RSVP to an Event (Protected)
-router.post("/:eventId", authMiddleware, rsvpEvent);
-router.get("/my-bookings", authMiddleware, getMyBookedEvents);
+router.post("/", authenticate, rsvpEvent);
+
 // 📌 Cancel RSVP (Protected)
-router.delete("/:eventId", authMiddleware, cancelRsvp);
+router.delete("/", authenticate, cancelRsvp);
 
 export default router;
