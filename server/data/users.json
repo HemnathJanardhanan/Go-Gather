@@ -5,5 +5,12 @@
     "email": "john@example.com",
     "password": "$2b$10$23gp0HR6qf3uf38D32/DW.EFV7TdEffkAiWaWcLGqECwE.KCIYoVS",
     "bookedEvents": []
+  },
+  {
+    "id": "1740295882463",
+    "name": "test",
+    "email": "test@test.com",
+    "password": "$2b$10$rSXFF6uWU5Qqj77uKWRnMuGgTZlu7KmAHq6PAVoZ1MeuO/EwqAimq",
+    "bookedEvents": []
   }
 ]

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "1740299944861",
+    "title": "test",
+    "description": "Testing event",
+    "location": {
+      "venue": "mahal",
+      "area": "",
+      "city": "Chennai",
+      "state": "Tn",
+      "pincode": 250
+    },
+    "date": "2025-03-06",
+    "image": "www.google .com",
+    "noOfSeats": 0,
+    "price": 0,
+    "category": "Test",
+    "createdBy": "1740295882463",
+    "attendees": []
+  }
+]

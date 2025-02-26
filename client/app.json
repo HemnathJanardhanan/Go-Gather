@@ -4,7 +4,7 @@
     "slug": "GO-GATHER",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/appicon.png",
+    "icon": "./assets/icons/app_icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -27,7 +27,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo .png",
+          "image": "./assets/icons/app_icon.png",
           "resizeMode": "cover",
           "backgroundColor": "#ffffff",
           "enableFullScreenImage_legacy": true

@@ -1,5 +1,5 @@
 
-import { Text, View, Image, TouchableOpacity, FlatList } from "react-native";
+import { Text, View, Image, TouchableOpacity, FlatList,Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
@@ -7,8 +7,9 @@ import Search from "@/components/search";
 import { FeaturedCard, Cards } from "@/components/EventCard";
 import Filter from "@/components/filter";
 import { cards, featuredCards } from "@/constants/data";
-
+import { useRouter } from "expo-router";
 export default function Index() {
+    const router = useRouter();
   return (
       <SafeAreaView className="bg-white h-full">
         <FlatList
@@ -35,7 +36,9 @@ export default function Index() {
                 {/* Header Section */}
                 <View className="flex flex-row items-center justify-between mt-5">
                   <View className="flex flex-row items-center">
-                    <Image source={images.avatar} className="size-12 rounded-full" />
+                      <Pressable onPress={() => router.push('/profile')}>
+                        <Image source={images.avatar} className="size-12 rounded-full" />
+                      </Pressable>
                     <View className="flex flex-col items-start ml-2 justify-center">
                       <Text className="text-xs font-nunito text-black-100">Good Morning</Text>
                       <Text className="text-base font-nunito-medium text-black-300">UserName</Text>
