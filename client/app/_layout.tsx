@@ -7,7 +7,7 @@ import { useFonts } from "expo-font";
 import "./global.css";
 
 export default function RootLayout() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+  // const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
 
   const [fontsLoaded] = useFonts({
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
@@ -19,19 +19,19 @@ export default function RootLayout() {
     "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
   });
 
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-      const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-      if (hasSeenWelcome === null) {
-        await AsyncStorage.setItem("hasSeenWelcome", "true");
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(false);
-      }
-    };
-
-    checkFirstLaunch();
-  }, []);
+  // useEffect(() => {
+  //   const checkFirstLaunch = async () => {
+  //     const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
+  //     if (hasSeenWelcome === null) {
+  //       await AsyncStorage.setItem("hasSeenWelcome", "true");
+  //       setIsFirstLaunch(true);
+  //     } else {
+  //       setIsFirstLaunch(false);
+  //     }
+  //   };
+  //
+  //   checkFirstLaunch();
+  // }, []);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -39,15 +39,17 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded || isFirstLaunch === null) {
+  if (!fontsLoaded) {
     return null; // Prevent rendering until check is done
   }
 
   return (
+
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />  {/* Onboarding Screen */}
         <Stack.Screen name="auth/login" />
         <Stack.Screen name="auth/signup" />
+        <Stack.Screen name="(tabs)"/>
       </Stack>
   );
 }

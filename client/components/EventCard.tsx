@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { useRouter } from 'expo-router';
 import images from '@/constants/images';
-
+import icons from '@/constants/icons';
 
 interface CardProps {
   title: string;
@@ -11,6 +11,12 @@ interface CardProps {
   rating: number;
   category: string;
   image: any;
+  id: string; // Unique identifier for navigation
+}
+interface EventCardProps {
+  title: string;
+  location: string;
+  price: string;
   id: string; // Unique identifier for navigation
 }
 
@@ -37,6 +43,28 @@ export const FeaturedCard = ({ title, location, price, rating, category, image, 
       </TouchableOpacity>
   );
 };
+export  const EventCard = ({ title, location, price, id }: EventCardProps) => {
+  return (
+      <TouchableOpacity>
+      <View className="flex-1 flex-row justify-between w-full h-45 rounded-3xl bg-gray-100 shadow-lg shadow-black-100/70 p-5 mb-6">
+        <View>
+        <Text className="text-2xl font-extrabold">{title}</Text>
+        <Text className="text-md font-nunito">{location}</Text>
+        <Text className="text-lg font-nunito text-green-500">{`Rs. ${price}`}</Text>
+        </View>
+        <View>
+        <TouchableOpacity>
+          <Image source={icons.del} className="size-12"/>
+        </TouchableOpacity>
+        </View>
+      </View>
+      </TouchableOpacity>
+  )
+
+
+}
+
+
 
 export const Cards = ({ title, location, price, rating, category, image, id }: CardProps) => {
   const router = useRouter();

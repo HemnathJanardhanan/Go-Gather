@@ -32,8 +32,10 @@ import wifi from "@/assets/icons/wifi.png";
 import location from "@/assets/icons/location.png";
 import edit from "@/assets/icons/edit.png";
 import plus from "@/assets/icons/plus.png";
+import del from "@/assets/icons/delete.png";
 import  app_icon from "@/assets/icons/app_icon.png";
 export default {
+  del,
   app_icon,
   plus,
   google,

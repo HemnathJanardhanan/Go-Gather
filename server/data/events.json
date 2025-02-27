@@ -17,5 +17,25 @@
     "category": "Test",
     "createdBy": "1740295882463",
     "attendees": []
+  },
+  {
+    "id": "1740687160886",
+    "title": "pre placement workshop",
+    "description": "An initiative by verizon",
+    "location": {
+      "venue": "vivek auditoriom",
+      "area": "",
+      "city": "Chennai",
+      "state": "Tamil nadu",
+      "pincode": 600089,
+      "mapLink": "Googlemaps.com"
+    },
+    "date": "2025-02-26",
+    "image": "img",
+    "noOfSeats": 0,
+    "price": 0,
+    "category": "Work",
+    "createdBy": "1740295882463",
+    "attendees": []
   }
 ]

@@ -1,5 +1,5 @@
-import {View, Text, Image, TextInput, TouchableOpacity,Alert} from 'react-native'
-import React,{useState} from 'react'
+import {View, Text, Image, TextInput, TouchableOpacity,Alert,Keyboard,TouchableWithoutFeedback} from 'react-native'
+import React, {useRef, useState} from 'react'
 import axios from "axios";
 import images from "@/constants/images";
 import {StatusBar} from 'expo-status-bar'
@@ -14,6 +14,12 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const inputRefs: { [key: string]: React.RefObject<TextInput> } = {
+
+        email: useRef<TextInput>(null),
+        password: useRef<TextInput>(null),
+
+    };
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Please enter both email and password");
@@ -44,6 +50,7 @@ const Login = () => {
 
     }
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="bg-white h-full w-full">
             <StatusBar style="light" />
             <Image className="h-full w-full absolute" source={images.background}/>
@@ -64,10 +71,27 @@ const Login = () => {
                 {/*form*/}
                 <View className="flex items-center mx-4 space-y-4">
                     <Animated.View entering={FadeInDown.duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-3">
-                        <TextInput placeholder='Email' placeholderTextColor={'gray'} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address"/>
+                        <TextInput placeholder='Email'
+                                   placeholderTextColor={'gray'}
+                                   value={email}
+                                   onChangeText={setEmail}
+                                   autoCapitalize="none"
+                                   keyboardType="email-address"
+                                   ref={inputRefs.email}
+                                   returnKeyType="next"
+                                   onSubmitEditing={()=>inputRefs.password.current?.focus()}
+                        />
                     </Animated.View>
                     <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-4">
-                        <TextInput placeholder='Password' placeholderTextColor={'gray'} secureTextEntry={true} value={password} onChangeText={setPassword}/>
+                        <TextInput placeholder='Password'
+                                   placeholderTextColor={'gray'}
+                                   secureTextEntry={true}
+                                   value={password}
+                                   onChangeText={setPassword}
+                                   ref={inputRefs.password}
+                                   returnKeyType="done"
+                                   onSubmitEditing={handleLogin}
+                        />
                     </Animated.View>
 
                     <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="w-full" >
@@ -85,6 +109,7 @@ const Login = () => {
         </View>
 
         </View>
+        </TouchableWithoutFeedback>
     )
 }
 export default Login

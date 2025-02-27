@@ -20,7 +20,7 @@ export const signup = async (req, res) => {
     const newUser = { id: Date.now().toString(), name, email, password: hashedPassword, bookedEvents: [] };
     users.push(newUser);
     await writeData("users.json", users);
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: "2m" });
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: "7m" });
     res.status(201).json({ message: "User registered", token, user: { id: newUser.id, name, email } });
 };
 
