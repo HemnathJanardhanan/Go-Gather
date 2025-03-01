@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const API_URL = "http://192.168.29.133:3000/api/auth/signup";
+const API_URL = "http://192.168.137.197:3000/api/auth/signup";
 
 const SignUp = () => {
     const router = useRouter();
@@ -28,6 +28,9 @@ const SignUp = () => {
         }
 
         setLoading(true);
+        console.log("Sending request to:", API_URL);  // Log API URL
+        console.log("Payload:", { name, email, password });  // Log request payload
+
         try {
             const response = await axios.post(API_URL, { name, email, password });
 

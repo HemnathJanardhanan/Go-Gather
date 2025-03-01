@@ -11,7 +11,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Platform } from 'react-native';
 
 
-const API_URL = "http://192.168.29.133:3000/api/events"; // Replace with your backend URL
+const API_URL = "http://192.168.137.197:3000/api/auth/events";
+ // Replace with your backend URL
 
 
 
