@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import images from "@/constants/images";
+
 import icons from "@/constants/icons"; // Import logo
 
 const Index = () => {

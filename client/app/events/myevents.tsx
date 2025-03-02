@@ -4,9 +4,10 @@ import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import Constants from "expo-constants";
 
-const API_URL = "http://192.168.29.178:3000/api/events/getEvents"; // Updated API URL
-
+const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events/my-hosted`; // ✅ Append the endpoint
+console.log(Constants?.expoConfig?.extra?.API_URL)
 type Event = {
     id: string;
     title: string;

@@ -9,9 +9,11 @@ import axios from "axios";
 import { useRef } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Platform } from 'react-native';
+import Constants from "expo-constants";
 
+const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
-const API_URL = "http://192.168.29.178:3000/api/auth/events";
+//const API_URL = "http://192.168.29.178:3000/api/auth/events";
  // Replace with your backend URL
 
 

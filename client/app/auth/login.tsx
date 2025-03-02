@@ -6,9 +6,13 @@ import {StatusBar} from 'expo-status-bar'
 import Animated, {FadeInDown, FadeInUp} from "react-native-reanimated";
 import {useRouter} from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from "expo-constants";
 
-const API_URL = "http://192.168.29.178:3000/api/auth/login";
+//const API_URL = "http://192.168.29.133:3000/api/auth/login";
  // Replace with your local IP
+
+const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/auth/login`;
+
 
 const Login = () => {
     const router = useRouter();
