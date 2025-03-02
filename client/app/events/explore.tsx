@@ -4,8 +4,9 @@ import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import {router} from "expo-router";
 
-const API_URL = "http://192.168.29.178:3000/api/events/getEvents"; // Updated API URL
+const API_URL = "http://192.168.29.178:3000/api/events/"; // Updated API URL
 
 type Event = {
     id: string;
@@ -53,8 +54,11 @@ const MyEventsScreen = () => {
         <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
             {/* Event Image */}
             <View className="relative">
+           <TouchableOpacity  onPress={() => router.push(`/events/${item.id}`)}>
                 <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
-                <TouchableOpacity className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md">
+           </TouchableOpacity>
+
+                <TouchableOpacity className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md"  onPress={() => router.push(`/events/${item.id}`)}>
                     <Icon name="heart-outline" size={22} color="#191d31" />
                 </TouchableOpacity>
             </View>

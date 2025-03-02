@@ -10,6 +10,8 @@ router.post("/",authenticate,createEvent);
 // 📌 Get All Events (Public)
 router.get("/", getEvents);
 
+router.get("/my-hosted", authenticate, getMyHostedEvents);
+
 // 📌 Get Single Event by ID (Public)
 router.get("/:id", getEventById);
 
@@ -19,6 +21,6 @@ router.put("/:id",authenticate,updateEvent);
 // 📌 Delete Event (Only Owner Can Delete)
 router.delete("/:id",authenticate,deleteEvent);
 
-router.get("/my-hosted",authenticate,getMyHostedEvents);
+
 
 export default router;

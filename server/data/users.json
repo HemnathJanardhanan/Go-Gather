@@ -12,5 +12,19 @@
     "email": "test@test.com",
     "password": "$2b$10$rSXFF6uWU5Qqj77uKWRnMuGgTZlu7KmAHq6PAVoZ1MeuO/EwqAimq",
     "bookedEvents": []
+  },
+  {
+    "id": "1740915931604",
+    "name": "My test ",
+    "email": "mytest",
+    "password": "$2b$10$Okod1KLRjM4dAMmnfsU0lebsEktH6VNZoCCXwdhDqJVhjvBPlg9Ye",
+    "bookedEvents": []
+  },
+  {
+    "id": "1740915961049",
+    "name": "Sheena",
+    "email": "sheenaxelin@gmail.com",
+    "password": "$2b$10$ULJ.r462kqoD9RYYfuhY6eY4yU5ifTgTf.98lw8JZ0WcQ/X3Sl9Ve",
+    "bookedEvents": []
   }
 ]
