@@ -6,8 +6,9 @@ import { useLocalSearchParams, router } from "expo-router";
 import { StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import Constants from "expo-constants";
 
-const API_URL = "http://192.168.29.178:3000/api/events";
+const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
 interface Event {
     id: string;

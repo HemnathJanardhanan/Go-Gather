@@ -5,8 +5,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {router} from "expo-router";
+import Constants from "expo-constants";
 
-const API_URL = "http://192.168.29.178:3000/api/events/"; // Updated API URL
+const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`; // Updated API URL
 
 type Event = {
     id: string;
