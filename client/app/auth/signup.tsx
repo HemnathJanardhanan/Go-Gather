@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const API_URL = "http://192.168.137.197:3000/api/auth/signup";
+const API_URL = "http://192.168.29.178:3000/api/auth/signup";
 
 const SignUp = () => {
     const router = useRouter();

@@ -8,8 +8,11 @@ import { FeaturedCard, Cards } from "@/components/EventCard";
 import Filter from "@/components/filter";
 import { cards, featuredCards } from "@/constants/data";
 import { useRouter } from "expo-router";
+import React from "react";
+
 export default function Index() {
     const router = useRouter();
+
   return (
       <SafeAreaView className="bg-white h-full">
         <FlatList
