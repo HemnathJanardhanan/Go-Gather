@@ -90,7 +90,7 @@ export default function Index() {
                 {/* Latest Picks Section */}
                 <View className="flex flex-row items-center justify-between">
                   <Text className="text-xl font-nunito-bold text-black-300">Latest Picks</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={()=> router.push('/events/explore')}>
                     <Text className="text-base font-nunito-bold text-primary-300">See All</Text>
                   </TouchableOpacity>
                 </View>

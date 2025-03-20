@@ -6,7 +6,7 @@ export const rsvpEvent = async (req, res) => {
     const events = await readData("events.json");
     const users = await readData("users.json");
     const { eventId, seats } = req.params;
-
+    console.log(eventId);
     const event = events.find(e => e.id === eventId);
     if (!event) return res.status(404).json({ error: "Event not found" });
     if (event.noOfSeats < seats) return res.status(400).json({ error: "Not enough seats available" });
