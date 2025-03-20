@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {router} from "expo-router";
 import Constants from "expo-constants";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`; // Updated API URL
 
@@ -52,6 +53,7 @@ const MyEventsScreen = () => {
     }, []);
 
     const renderEvent = ({ item }: { item: Event }) => (
+        <TouchableOpacity onPress={() => router.push(`/events/${item.id}`)}>
         <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
             {/* Event Image */}
             <View className="relative">
@@ -59,9 +61,7 @@ const MyEventsScreen = () => {
                 <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
            </TouchableOpacity>
 
-                <TouchableOpacity className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md"  onPress={() => router.push(`/events/${item.id}`)}>
-                    <Icon name="heart-outline" size={22} color="#191d31" />
-                </TouchableOpacity>
+
             </View>
 
             {/* Event Details */}
@@ -80,10 +80,12 @@ const MyEventsScreen = () => {
                 </View>
             </View>
         </View>
+        </TouchableOpacity>
     );
 
     return (
-        <View className="flex-1 bg-gray-100 p-5">
+        <SafeAreaView className="h-full flex-1 bg-gray-100 p-5">
+        <View>
             {/* Header */}
             <View className="flex-row justify-between items-center mb-5">
                 <Text className="text-2xl font-extrabold text-black">My Events</Text>
@@ -102,6 +104,7 @@ const MyEventsScreen = () => {
                 />
             )}
         </View>
+        </SafeAreaView>
     );
 };
 
