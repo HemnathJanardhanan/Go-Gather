@@ -41,11 +41,31 @@ export const deleteEvent = async (req, res) => {
     res.json({ message: "Event deleted" });
 };
 
+// export const getMyHostedEvents = async (req, res) => {
+//     const events = await readData("events.json");
+//     const myEvents = events.filter(event => event.createdBy === req.user);
+//     res.json(myEvents);
+// };
+
 export const getMyHostedEvents = async (req, res) => {
-    const events = await readData("events.json");
-    const myEvents = events.filter(event => event.createdBy === req.user);
-    res.json(myEvents);
+    try {
+        const userId = req.user; // Ensure the user is authenticated
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const events = await readData("events.json");
+        const myEvents = events.filter(event => event.createdBy === userId);
+
+        res.json(myEvents);
+    } catch (error) {
+        console.error("Error fetching hi events:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 };
+
+
+
 
 export const getEventById = async (req, res) => {
     const events = await readData("events.json");
