@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
 
 import "./global.css";
+import LoadingScreen from "@/app/LoadingScreen";
 
 export default function RootLayout() {
-  // const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
-
+  const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
     "Nunito-Medium": require("../assets/fonts/Nunito-Medium.ttf"),
@@ -20,28 +20,29 @@ export default function RootLayout() {
   });
 
   // useEffect(() => {
-  //   const checkFirstLaunch = async () => {
-  //     const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-  //     if (hasSeenWelcome === null) {
-  //       await AsyncStorage.setItem("hasSeenWelcome", "true");
-  //       setIsFirstLaunch(true);
-  //     } else {
-  //       setIsFirstLaunch(false);
-  //     }
-  //   };
+  //   if (fontsLoaded) {
+  //     SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
   //
-  //   checkFirstLaunch();
-  // }, []);
+  // if (!fontsLoaded) {
+  //   return <LoadingScreen/>; // Prevent rendering until check is done
+  // }
+    useEffect(() => {
+        const prepareApp = async () => {
+            await new Promise((resolve) => setTimeout(resolve, 10000)); // Force 2 sec delay
+            setAppIsReady(true);
+            await SplashScreen.hideAsync();
+        };
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+        if (fontsLoaded) {
+            prepareApp();
+        }
+    }, [fontsLoaded]);
+
+    if (!appIsReady) {
+        return <LoadingScreen />; // Show loading screen for 2s minimum
     }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null; // Prevent rendering until check is done
-  }
 
   return (
 

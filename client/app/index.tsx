@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 
 import icons from "@/constants/icons"; // Import logo
 import LottieView from "lottie-react-native"
-
+import images from "@/constants/images";
 
 const Index = () => {
     const router = useRouter();
@@ -11,14 +11,7 @@ const Index = () => {
     return (
         <View className="flex-1 w-full h-full bg-accent-100 items-center justify-center p-6">
             {/* Logo */}
-            <View className="flex items-center justify-center w-full h-full">
-                <LottieView
-                    source={require("@/assets/lottie/CamelLoad.json")}
-                    autoPlay
-                    loop
 
-                />
-            </View>
 
             <Image source={icons.app_icon} className="w-40 h-40 mb-6" resizeMode="contain" />
 
