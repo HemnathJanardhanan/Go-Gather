@@ -5,9 +5,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Constants from "expo-constants";
+import { SafeAreaView } from "react-native-safe-area-context";
+const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
 
-const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events/my-hosted`; // ✅ Append the endpoint
-console.log(Constants?.expoConfig?.extra?.API_URL)
 type Event = {
     id: string;
     title: string;
@@ -34,18 +34,20 @@ const MyEventsScreen = () => {
                     return;
                 }
 
-                const response = await axios.get(API_URL, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const response = await axios.get(`${API_URL}/events/my-hosted`, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
+
 
                 setEvents(response.data);
             } catch (error) {
-                console.error("Error fetching events:", error);
-                Alert.alert("Error", "Failed to load events. Please try again.");
+                console.error("Error fetching hosted events:", error);
+                Alert.alert("Error", "Failed to load hosted events. Please try again.");
             } finally {
                 setLoading(false);
             }
         };
+
 
         fetchEvents();
     }, []);
@@ -55,9 +57,7 @@ const MyEventsScreen = () => {
             {/* Event Image */}
             <View className="relative">
                 <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
-                <TouchableOpacity className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md">
-                    <Icon name="heart-outline" size={22} color="#191d31" />
-                </TouchableOpacity>
+
             </View>
 
             {/* Event Details */}
@@ -79,25 +79,28 @@ const MyEventsScreen = () => {
     );
 
     return (
-        <View className="flex-1 bg-gray-100 p-5">
-            {/* Header */}
-            <View className="flex-row justify-between items-center mb-5">
-                <Text className="text-2xl font-extrabold text-black">My Events</Text>
-                <Icon name="filter-outline" size={26} color="#191d31" />
-            </View>
 
-            {/* Loading Indicator */}
-            {loading ? (
-                <ActivityIndicator size="large" color="#191d31" className="mt-10" />
-            ) : (
-                <FlatList
-                    data={events}
-                    renderItem={renderEvent}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                />
-            )}
-        </View>
+            <SafeAreaView className="flex-1 bg-gray-100 p-5">
+                {/* Header */}
+                <View className="flex-row justify-between items-center mb-5">
+                    <Text className="text-2xl font-extrabold text-black">My Events</Text>
+                    <Icon name="filter-outline" size={26} color="#191d31" />
+                </View>
+
+                {/* Loading Indicator */}
+                {loading ? (
+                    <ActivityIndicator size="large" color="#191d31" className="mt-10" />
+                ) : (
+                    <FlatList
+                        data={events}
+                        renderItem={renderEvent}
+                        keyExtractor={(item) => item.id}
+                        showsVerticalScrollIndicator={false}
+                    />
+                )}
+            </SafeAreaView>
+
+
     );
 };
 
