@@ -1,18 +1,19 @@
-
-import { Text, View, Image, TouchableOpacity, FlatList,Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {FlatList, Image, Pressable, Text, TouchableOpacity, View} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
 import Search from "@/components/search";
-import { FeaturedCard, Cards } from "@/components/EventCard";
+import {Cards, FeaturedCard} from "@/components/EventCard";
 import Filter from "@/components/filter";
-import { cards, featuredCards } from "@/constants/data";
-import { useRouter } from "expo-router";
-import React from "react";
+import {cards, featuredCards} from "@/constants/data";
+import {useRouter} from "expo-router";
+import React, {useRef} from "react";
+import BannerVideo from "@/components/BannerVideo";
+
 
 export default function Index() {
     const router = useRouter();
-
+    const videoRef = useRef(null);
   return (
       <SafeAreaView className="bg-white h-full">
         <FlatList
@@ -53,6 +54,7 @@ export default function Index() {
                 {/* Search Component */}
                 <Search />
 
+                  <BannerVideo/>
                 {/* Popular Section */}
                 <View className="my-5">
                   <View className="flex flex-row items-center justify-between">
