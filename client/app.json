@@ -44,8 +44,22 @@
             "./assets/fonts/Nunito-Bold.ttf",
             "./assets/fonts/Nunito-Medium.ttf",
             "./assets/fonts/Nunito-Regular.ttf"
-          
-        ]
+          ]
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "mode": "automatic",
+          "android": {
+            "useGoogleServicesJson": true
+          },
+          "ios": {
+            "allowAlert": true,
+            "allowBadge": true,
+            "allowSound": true,
+            "allowCriticalAlerts": true
+          }
         }
       ]
     ],
@@ -54,7 +68,6 @@
     },
     "extra": {
       "API_URL": "http://192.168.29.178:3000/api"
-
     }
   }
 }
