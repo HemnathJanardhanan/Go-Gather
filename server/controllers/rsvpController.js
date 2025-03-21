@@ -1,12 +1,45 @@
 import { readData, writeData } from "../utils/fileUtils.js";
 
 // controllers/rsvpController.js
+// export const rsvpEvent = async (req, res) => {
+//     const rsvps = await readData("rsvps.json");
+//     const events = await readData("events.json");
+//     const users = await readData("users.json");
+//     const { eventId, seats } = req.params;
+//     console.log(eventId);
+//     const event = events.find(e => e.id === eventId);
+//     if (!event) return res.status(404).json({ error: "Event not found" });
+//     if (event.noOfSeats < seats) return res.status(400).json({ error: "Not enough seats available" });
+//
+//     if (rsvps.find(r => r.eventId === eventId && r.userId === req.user)) {
+//         return res.status(400).json({ error: "Already RSVP'd" });
+//     }
+//
+//     event.noOfSeats -= seats;
+//     event.attendees.push({ userId: req.user, seats });
+//     await writeData("events.json", events);
+//
+//     const user = users.find(u => u.id === req.user);
+//     user.bookedEvents.push({ eventId, seats });
+//     await writeData("users.json", users);
+//
+//     rsvps.push({ id: Date.now().toString(), eventId, userId: req.user, seats });
+//     await writeData("rsvps.json", rsvps);
+//
+//     res.status(201).json({ message: "RSVP successful" });
+// };
+
 export const rsvpEvent = async (req, res) => {
     const rsvps = await readData("rsvps.json");
     const events = await readData("events.json");
     const users = await readData("users.json");
-    const { eventId, seats } = req.params;
-    console.log(eventId);
+
+    const { eventId, seats } = req.body; // Fix: use req.body instead of req.params
+
+    if (!eventId || !seats) {
+        return res.status(400).json({ error: "Event ID and seats are required" });
+    }
+
     const event = events.find(e => e.id === eventId);
     if (!event) return res.status(404).json({ error: "Event not found" });
     if (event.noOfSeats < seats) return res.status(400).json({ error: "Not enough seats available" });
@@ -20,8 +53,10 @@ export const rsvpEvent = async (req, res) => {
     await writeData("events.json", events);
 
     const user = users.find(u => u.id === req.user);
-    user.bookedEvents.push({ eventId, seats });
-    await writeData("users.json", users);
+    if (user) {
+        user.bookedEvents.push({ eventId, seats });
+        await writeData("users.json", users);
+    }
 
     rsvps.push({ id: Date.now().toString(), eventId, userId: req.user, seats });
     await writeData("rsvps.json", rsvps);

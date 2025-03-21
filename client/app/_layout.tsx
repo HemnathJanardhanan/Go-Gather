@@ -1,10 +1,20 @@
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
 
 import "./global.css";
+
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+    }),
+});
 
 export default function RootLayout() {
   // const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
@@ -19,25 +29,23 @@ export default function RootLayout() {
     "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
   });
 
-  // useEffect(() => {
-  //   const checkFirstLaunch = async () => {
-  //     const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-  //     if (hasSeenWelcome === null) {
-  //       await AsyncStorage.setItem("hasSeenWelcome", "true");
-  //       setIsFirstLaunch(true);
-  //     } else {
-  //       setIsFirstLaunch(false);
-  //     }
-  //   };
-  //
-  //   checkFirstLaunch();
-  // }, []);
 
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+    useEffect(() => {
+        const registerForPushNotifications = async () => {
+            const { status } = await Notifications.getPermissionsAsync();
+            if (status !== "granted") {
+                await Notifications.requestPermissionsAsync();
+            }
+        };
+
+        registerForPushNotifications();
+    }, []);
 
   if (!fontsLoaded) {
     return null; // Prevent rendering until check is done
