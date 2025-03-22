@@ -1,4 +1,4 @@
-import {View, Text, Image, TextInput, TouchableOpacity,Alert,Keyboard,TouchableWithoutFeedback} from 'react-native'
+import {View, Text, Image, TextInput, TouchableOpacity,Alert,Keyboard,TouchableWithoutFeedback,Modal} from 'react-native'
 import React, {useRef, useState} from 'react'
 import axios from "axios";
 import images from "@/constants/images";
@@ -7,7 +7,7 @@ import Animated, {FadeInDown, FadeInUp} from "react-native-reanimated";
 import {useRouter} from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from "expo-constants";
-
+import LoadingScreen from "@/app/LoadingScreen";
 //const API_URL = "http://192.168.29.133:3000/api/auth/login";
  // Replace with your local IP
 
@@ -34,7 +34,7 @@ const Login = () => {
         setLoading(true);
         try {
             const response = await axios.post(API_URL, { email, password });
-            console.log(response);
+
             await AsyncStorage.setItem("token", response.data.token);
             await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
             await AsyncStorage.setItem("hasSeenWelcome", "true");
@@ -57,6 +57,9 @@ const Login = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="bg-white h-full w-full">
+            <Modal transparent visible={loading}>
+                <LoadingScreen />
+            </Modal>
             <StatusBar style="light" />
             <Image className="h-full w-full absolute" source={images.background}/>
 

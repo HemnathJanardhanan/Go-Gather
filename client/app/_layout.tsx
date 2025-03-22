@@ -28,22 +28,13 @@ export default function RootLayout() {
     "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
   });
 
-  // useEffect(() => {
-  //   if (fontsLoaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
-  //
-  // if (!fontsLoaded) {
-  //   return <LoadingScreen/>; // Prevent rendering until check is done
-  // }
+
     useEffect(() => {
         const prepareApp = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 5000)); // Force 2 sec delay
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // Force 2 sec delay
             setAppIsReady(true);
             await SplashScreen.hideAsync();
         };
-
         if (fontsLoaded) {
             prepareApp();
         }
@@ -73,7 +64,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" />  {/* Onboarding Screen */}
         <Stack.Screen name="auth/login" />
         <Stack.Screen name="auth/signup" />
-        <Stack.Screen name="(tabs)"/>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
       </Stack>
   );
 }

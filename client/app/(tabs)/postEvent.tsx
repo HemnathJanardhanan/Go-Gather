@@ -13,13 +13,6 @@ import Constants from "expo-constants";
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
-//const API_URL = "http://192.168.29.178:3000/api/auth/events";
- // Replace with your backend URL
-
-
-
-
-
 interface Location {
   venue: string;
   area: string;
@@ -125,7 +118,29 @@ const EventForm = () => {
       const token = await AsyncStorage.getItem("token");
       await axios.post(API_URL, eventData, { headers: { Authorization: `Bearer ${token}` } });
       Alert.alert("Success", "Event created successfully!");
-      router.replace("/events/myevents");
+      setEventData({
+        title: "",
+        description: "",
+        location: {
+          venue: "",
+          area: "",
+          city: "",
+          state: "",
+          pincode: 0,
+          mapLink: "",
+        },
+        date: "",
+        image: "",
+        noOfSeats: 0,
+        price: 0,
+        category: "",
+      });
+      setStep(1);
+      // Reset input fields (if refs are being used)
+      Object.values(inputRefs).forEach((ref) => ref.current?.clear());
+      router.replace("/");
+      setTimeout(()=>{router.push("/profile/myevents");},1000);
+
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         Alert.alert("Error", error.response?.data?.error || "Something went wrong.");
@@ -231,14 +246,7 @@ const EventForm = () => {
                 <View className="flex items-center space-y-4">
                   <Animated.Text entering={FadeInDown.duration(1000).springify()} className="text-3xl font-nunito-bold text-black mb-3 ">Other Details</Animated.Text>
                   <Animated.View entering={FadeInDown.delay(100).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                    {/*<TextInput placeholder="Date (YYYY-MM-DD)"*/}
-                    {/*           value={eventData.date}*/}
-                    {/*           placeholderTextColor={'gray'}*/}
-                    {/*           onChangeText={(text) => handleChange("date", text)}*/}
-                    {/*           ref={inputRefs.date}*/}
-                    {/*           returnKeyType="next"*/}
-                    {/*           onSubmitEditing={()=>inputRefs.image.current?.focus()}*/}
-                    {/*/>*/}
+
                     <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                       <View className="bg-black/5 p-5 rounded-2xl w-full mb-4">
                         <Text className="text-black">{eventData.date || "Select Date (YYYY-MM-DD)"}</Text>

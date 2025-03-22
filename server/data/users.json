@@ -11,16 +11,7 @@
     "name": "test",
     "email": "test@test.com",
     "password": "$2b$10$rSXFF6uWU5Qqj77uKWRnMuGgTZlu7KmAHq6PAVoZ1MeuO/EwqAimq",
-    "bookedEvents": [
-      {
-        "eventId": "1740687160886",
-        "seats": 2
-      },
-      {
-        "eventId": "1740299944861",
-        "seats": 3
-      }
-    ]
+    "bookedEvents": []
   },
   {
     "id": "1740915931604",
@@ -34,11 +25,6 @@
     "name": "Sheena",
     "email": "sheena",
     "password": "$2b$10$swapd4p/4pgsl3nJsG61IujFU9YZmBtj1JQFd5JHif5nhNz/YUJ1K",
-    "bookedEvents": [
-      {
-        "eventId": "1740299944861",
-        "seats": 1
-      }
-    ]
+    "bookedEvents": []
   }
 ]

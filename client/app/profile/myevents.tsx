@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import {View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert, Modal} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LoadingScreen from "@/app/LoadingScreen";
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
 
 type Event = {
@@ -54,6 +55,7 @@ const MyEventsScreen = () => {
 
     const renderEvent = ({ item }: { item: Event }) => (
         <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
+
             {/* Event Image */}
             <View className="relative">
                 <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
@@ -81,9 +83,12 @@ const MyEventsScreen = () => {
     return (
 
             <SafeAreaView className="flex-1 bg-gray-100 p-5">
+                <Modal transparent visible={loading}>
+                    <LoadingScreen />
+                </Modal>
                 {/* Header */}
                 <View className="flex-row justify-between items-center mb-5">
-                    <Text className="text-2xl font-extrabold text-black">My Events</Text>
+                    <Text className="text-3xl font-nunito-ExtraBold text-black">My Events</Text>
                     <Icon name="filter-outline" size={26} color="#191d31" />
                 </View>
 
