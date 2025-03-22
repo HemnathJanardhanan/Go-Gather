@@ -34,7 +34,7 @@ const Login = () => {
         setLoading(true);
         try {
             const response = await axios.post(API_URL, { email, password });
-            console.log(response);
+
             await AsyncStorage.setItem("token", response.data.token);
             await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
             await AsyncStorage.setItem("hasSeenWelcome", "true");
