@@ -1,5 +1,15 @@
 
-import { View, Text, Image, TextInput, TouchableOpacity, Alert,Keyboard,TouchableWithoutFeedback} from "react-native";
+import {
+    View,
+    Text,
+    Image,
+    TextInput,
+    TouchableOpacity,
+    Alert,
+    Keyboard,
+    TouchableWithoutFeedback,
+    Modal
+} from "react-native";
 import React, {useRef, useState} from "react";
 import axios from "axios";
 import images from "@/constants/images";
@@ -9,6 +19,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Constants from "expo-constants";
+import LoadingScreen from "@/app/LoadingScreen";
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/auth/signup`;
 //const API_URL = "http://192.168.29.178:3000/api/auth/signup";
@@ -60,6 +71,9 @@ const SignUp = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="bg-white h-full w-full">
+            <Modal transparent visible={loading}>
+                <LoadingScreen />
+            </Modal>
             <StatusBar style="light" />
             <Image className="h-full w-full absolute" source={images.background} />
 
