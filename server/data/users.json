@@ -11,7 +11,12 @@
     "name": "test",
     "email": "test@test.com",
     "password": "$2b$10$rSXFF6uWU5Qqj77uKWRnMuGgTZlu7KmAHq6PAVoZ1MeuO/EwqAimq",
-    "bookedEvents": []
+    "bookedEvents": [
+      {
+        "eventId": "1742565619783",
+        "seats": 1
+      }
+    ]
   },
   {
     "id": "1740915931604",
