@@ -8,7 +8,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-
+import CelebrateAnimation from "@/components/CelebrateAnimation";
 
 
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000/api";
@@ -38,7 +38,7 @@ const EventDetails = () => {
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
     const [seats, setSeats] = useState(1);
-
+    const [success, setSuccess] = useState(false);
     useEffect(() => {
         const fetchEventDetails = async () => {
             setLoading(true);
@@ -77,43 +77,6 @@ const EventDetails = () => {
         await AsyncStorage.setItem("expoPushToken", token);
     };
 
-
-
-
-    // const handleRSVP = async () => {
-    //     try {
-    //         const token = await AsyncStorage.getItem("token");
-    //
-    //         if (!token) {
-    //             Alert.alert("Error", "You must be logged in to RSVP");
-    //             return;
-    //         }
-    //
-    //         const user = await AsyncStorage.getItem("user");
-    //         const userId = JSON.parse(user ?? "{}")?.id; // Get user ID from AsyncStorage
-    //
-    //         if (!userId) {
-    //             Alert.alert("Error", "User data not found");
-    //             return;
-    //         }
-    //
-    //         const response = await axios.post(
-    //             `${API_URL}/rsvp`,
-    //             { eventId: id, seats }, // Sending data in the request body
-    //             { headers: { Authorization: `Bearer ${token}` } } // Auth header
-    //         );
-    //
-    //         Alert.alert("Success", "RSVP confirmed and saved!");
-    //         setModalVisible(false);
-    //     } catch (error) {
-    //         if (axios.isAxiosError(error)) {
-    //             Alert.alert("Error", error.response?.data?.error || "RSVP failed");
-    //         } else {
-    //             Alert.alert("Error", "An unexpected error occurred");
-    //         }
-    //     }
-    // };
-
     const handleRSVP = async () => {
         try {
             const token = await AsyncStorage.getItem("token");
@@ -147,8 +110,9 @@ const EventDetails = () => {
                 trigger: null, // Triggers immediately
             });
 
-            Alert.alert("Success", "RSVP confirmed!");
+            //Alert.alert("Success", "RSVP confirmed!");
             setModalVisible(false);
+            setSuccess(true);
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 Alert.alert("Error", error.response?.data?.error || "RSVP failed");
@@ -219,6 +183,8 @@ const EventDetails = () => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+
+            <CelebrateAnimation visible={success} onFinish={() => setSuccess(false)} />
 
             <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
                 <View className="flex-1 justify-end bg-black/50">
