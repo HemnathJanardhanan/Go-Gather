@@ -12,18 +12,7 @@
     "email": "test@test.com",
     "password": "$2b$10$rSXFF6uWU5Qqj77uKWRnMuGgTZlu7KmAHq6PAVoZ1MeuO/EwqAimq",
     "bookedEvents": [
-      {
-        "eventId": "1742565619783",
-        "seats": 1
-      },
-      {
-        "eventId": "1740299944861",
-        "seats": 2
-      },
-      {
-        "eventId": "1740687160886",
-        "seats": 2
-      }
+
     ]
   },
   {
