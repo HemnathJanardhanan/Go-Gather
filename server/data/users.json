@@ -15,6 +15,14 @@
       {
         "eventId": "1742565619783",
         "seats": 1
+      },
+      {
+        "eventId": "1740299944861",
+        "seats": 1
+      },
+      {
+        "eventId": "1740687160886",
+        "seats": 1
       }
     ]
   },
@@ -30,6 +38,20 @@
     "name": "Sheena",
     "email": "sheena",
     "password": "$2b$10$swapd4p/4pgsl3nJsG61IujFU9YZmBtj1JQFd5JHif5nhNz/YUJ1K",
+    "bookedEvents": []
+  },
+  {
+    "id": "1743104843009",
+    "name": "Mnat",
+    "email": "mnat@test.com",
+    "password": "$2b$10$Dvkge.J9quB1xtQMOZXdRux33KwVHsdFqO4OfLdjAhVsobUJ4u88.",
+    "bookedEvents": []
+  },
+  {
+    "id": "1743282067214",
+    "name": "Mnat",
+    "email": "mnat@mnat.com",
+    "password": "$2b$10$Gm696gE5mo.TjUhGevoG1.sn6w/FWcwgc1L727b8qnmuMPoEYiSui",
     "bookedEvents": []
   }
 ]

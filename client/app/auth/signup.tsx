@@ -54,7 +54,7 @@ const SignUp = () => {
             await AsyncStorage.setItem("hasSeenWelcome", "true"); // Mark welcome screen as seen
 
             Alert.alert("Success", "Account created successfully!");
-            router.replace("/(tabs)"); // Redirect to main app
+            router.replace("/profile/ProfileSetup"); // Redirect to main app
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error("Signup Error:", error.response?.data || error.message);

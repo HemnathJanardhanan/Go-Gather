@@ -18,6 +18,7 @@ Notifications.setNotificationHandler({
 
 export default function RootLayout() {
     const [appIsReady, setAppIsReady] = useState(false);
+    const [userToken, setUserToken] = useState<string | null>(null);
     const [fontsLoaded] = useFonts({
         "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
         "Nunito-Medium": require("../assets/fonts/Nunito-Medium.ttf"),
@@ -27,18 +28,31 @@ export default function RootLayout() {
         "Nunito-SemiBold": require("../assets/fonts/Nunito-SemiBold.ttf"),
         "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
     });
-
     useEffect(() => {
         const prepareApp = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 sec delay
-            setAppIsReady(true);
-            await SplashScreen.hideAsync();
+            try {
+                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulated delay
+                const token = await AsyncStorage.getItem("token");
+                console.log("Fetched token from storage:", token);
+
+                setUserToken(token ?? null); // ✅ Update state first
+                await SplashScreen.hideAsync(); // ✅ Hide splash screen after state update
+                setAppIsReady(true);
+            } catch (error) {
+                console.error("Error loading app:", error);
+                setAppIsReady(true); // Ensure app doesn't get stuck in loading
+            }
         };
 
         if (fontsLoaded) {
             prepareApp();
         }
     }, [fontsLoaded]);
+
+// ✅ Log state only when it actually updates
+    useEffect(() => {
+        console.log("Updated userToken state:", userToken);
+    }, [userToken]);
 
     useEffect(() => {
         const registerForPushNotifications = async () => {
@@ -51,16 +65,23 @@ export default function RootLayout() {
         registerForPushNotifications();
     }, []);
 
-    if (!appIsReady) {
-        return <LoadingScreen />; // Show loading screen
+    if (!appIsReady || userToken === null) {
+        return <LoadingScreen />; // ✅ Wait until token is checked
     }
 
     return (
-        <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />  {/* Onboarding Screen */}
-            <Stack.Screen name="auth/login" />
-            <Stack.Screen name="auth/signup" />
-            <Stack.Screen name="(tabs)"/>
+        <Stack key={userToken ? "authenticated" : "unauthenticated"} screenOptions={{ headerShown: false }}>
+            {userToken ? (
+                <Stack.Screen name="(tabs)" />
+                ) : (
+                <>
+                    <Stack.Screen name="index" />
+                    <Stack.Screen name="auth/login" />
+                    <Stack.Screen name="auth/signup" />
+                </>
+                )
+            }
         </Stack>
     );
+
 }

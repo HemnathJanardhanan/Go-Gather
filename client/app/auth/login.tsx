@@ -8,7 +8,7 @@ import {useRouter} from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from "expo-constants";
 import LoadingScreen from "@/app/LoadingScreen";
-//const API_URL = "http://192.168.29.133:3000/api/auth/login";
+
  // Replace with your local IP
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/auth/login`;
