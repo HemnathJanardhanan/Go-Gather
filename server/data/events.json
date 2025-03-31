@@ -12,16 +12,11 @@
     },
     "date": "2025-03-06",
     "image": "https://imgs.search.brave.com/ymCE56WjHAuX8uLGLGLMqQA26vtrt5bjs-jdfmyhjX0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQy/NDk4NzkxMC9waG90/by9jb3dvcmtlcnMt/d2l0aC1zdGFja2Vk/LWhhbmRzLWF0LXRo/ZS1vZmZpY2UuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPVZS/Y0ZEMEltN215Yzcw/WUJhcjFZTEJTUEwt/Q3RZemVuVnlkNFhS/aGxvUTg9",
-    "noOfSeats": 27,
+    "noOfSeats": 28,
     "price": 0,
     "category": "Test",
     "createdBy": "1740295882463",
-    "attendees": [
-      {
-        "userId": "1740295882463",
-        "seats": 1
-      }
-    ]
+    "attendees": []
   },
   {
     "id": "1740687160886",
@@ -37,15 +32,11 @@
     },
     "date": "2025-02-26",
     "image": "https://imgs.search.brave.com/WdcwjkyJsLnCPo53X8VuYjUn2FDKUhnsMeiAdXo9QCM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA2LzM0Lzc0LzQz/LzM2MF9GXzYzNDc0/NDMzNV9hUTRUSllm/Tkc4TlM1cGttOUxa/RTlDNDg4MFZSazJO/VC5qcGc",
-    "noOfSeats": 24,
+    "noOfSeats": 28,
     "price": 0,
     "category": "Work",
     "createdBy": "1740230771608",
     "attendees": [
-      {
-        "userId": "1740295882463",
-        "seats": 1
-      }
     ]
   },
   {
@@ -62,35 +53,10 @@
     },
     "date": "2025-09-04",
     "image": "https://media.istockphoto.com/id/542095594/photo/birthday-party-in-the-office.jpg?s=612x612&w=0&k=20&c=-QK7XL40VVwucnL4nbi4cMqfuFUGfb8ZFpUQbLsx85E=",
-    "noOfSeats": 22,
+    "noOfSeats": 30,
     "price": 200,
     "category": "Celebration ",
     "createdBy": "1742547227834",
-    "attendees": [
-      {
-        "userId": "1740295882463",
-        "seats": 1
-      }
-    ]
-  },
-  {
-    "id": "1742643257767",
-    "title": "veedu function",
-    "description": "Function at veedu",
-    "location": {
-      "venue": "veedu",
-      "area": "",
-      "city": "Chennai ",
-      "state": "Tn",
-      "pincode": 30,
-      "mapLink": "Google.com"
-    },
-    "date": "2025-03-23",
-    "image": "empty",
-    "noOfSeats": 30,
-    "price": 0,
-    "category": "Party",
-    "createdBy": "1740295882463",
     "attendees": []
   }
 ]

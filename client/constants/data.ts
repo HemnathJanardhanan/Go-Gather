@@ -85,11 +85,11 @@ export const settings = [
     title: "My Events",
     icon: icons.calendar,
   },
-  {
-
-    title: "Payments",
-    icon: icons.wallet,
-  },
+  // {
+  //
+  //   title: "Payments",
+  //   icon: icons.wallet,
+  // },
   {
 
     title: "Profile",
@@ -100,9 +100,9 @@ export const settings = [
     title: "Notifications",
     icon: icons.bell,
   },
-  {
-
-    title: "Invite Friends",
-    icon: icons.people,
-  },
+  // {
+  //
+  //   title: "Invite Friends",
+  //   icon: icons.people,
+  // },
 ];

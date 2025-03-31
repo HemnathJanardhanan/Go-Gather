@@ -119,7 +119,7 @@ export default function Index() {
                     <View className="my-5">
                         <View className="flex flex-row items-center justify-between">
                             <Text className="text-2xl font-nunito-bold text-black-300">Free Events</Text>
-                            <TouchableOpacity onPress={() => router.push("/events/free")}>
+                            <TouchableOpacity onPress={() => router.push("/events/explore")}>
                                 <Text className="text-base font-nunito-bold text-primary-300">See All</Text>
                             </TouchableOpacity>
                         </View>

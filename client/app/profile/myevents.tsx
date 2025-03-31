@@ -7,6 +7,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoadingScreen from "@/app/LoadingScreen";
+import {router} from "expo-router";
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
 
 type Event = {
@@ -54,30 +55,38 @@ const MyEventsScreen = () => {
     }, []);
 
     const renderEvent = ({ item }: { item: Event }) => (
-        <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
+        <TouchableOpacity onPress={() => router.push(`/events/${item.id}`)}>
+            <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
+                {/* Event Image */}
+                <View className="relative">
+                    <TouchableOpacity  onPress={() => router.push(`/profile/${item.id}`)}>
+                        {item.image ? (
+                            <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
+                        ) : (
+                            <View className="w-full h-52 bg-gray-300 flex items-center justify-center">
+                                <Text className="text-gray-500">No Image</Text>
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                </View>
 
-            {/* Event Image */}
-            <View className="relative">
-                <Image source={{ uri: item.image }} className="w-full h-52 rounded-t-2xl" />
-
-            </View>
-
-            {/* Event Details */}
-            <View className="p-4">
-                <Text className="text-lg font-bold text-black">{item.title}</Text>
-                <Text className="text-gray-600 text-sm mt-1">
-                    {item.location.venue}, {item.location.city}
-                </Text>
-
-                {/* Date & Price */}
-                <View className="flex-row justify-between items-center mt-3">
-                    <Text className="text-gray-500 text-sm">{item.date}</Text>
-                    <Text className="text-primary-500 font-semibold">
-                        {item.price > 0 ? `₹${item.price}` : "Free"}
+                {/* Event Details */}
+                <View className="p-4">
+                    <Text className="text-lg font-nunito-bold text-black">{item.title}</Text>
+                    <Text className="text-gray-600 text-sm mt-1">
+                        {item.location.venue}, {item.location.city}
                     </Text>
+
+                    {/* Date & Price */}
+                    <View className="flex-row justify-between items-center mt-3">
+                        <Text className="text-gray-500 text-sm">{item.date}</Text>
+                        <Text className="text-primary-500 font-nunito-SemiBold">
+                            {item.price > 0 ? `₹${item.price}` : "Free"}
+                        </Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -89,7 +98,7 @@ const MyEventsScreen = () => {
                 {/* Header */}
                 <View className="flex-row justify-between items-center mb-5">
                     <Text className="text-3xl font-nunito-ExtraBold text-black">My Events</Text>
-                    <Icon name="filter-outline" size={26} color="#191d31" />
+
                 </View>
 
                 {/* Loading Indicator */}

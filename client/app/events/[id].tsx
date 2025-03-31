@@ -97,7 +97,7 @@ const EventDetails = () => {
             const response = await axios.post(
                 `${API_URL}/rsvp`,
                 { eventId: id, seats },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization: `Bearer ${token}`} }
             );
 
 
