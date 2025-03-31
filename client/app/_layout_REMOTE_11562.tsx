@@ -8,7 +8,6 @@ import { useFonts } from "expo-font";
 import "./global.css";
 import LoadingScreen from "@/app/LoadingScreen";
 
-
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -29,13 +28,13 @@ export default function RootLayout() {
         "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
     });
 
-
     useEffect(() => {
         const prepareApp = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Force 2 sec delay
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 sec delay
             setAppIsReady(true);
             await SplashScreen.hideAsync();
         };
+
         if (fontsLoaded) {
             prepareApp();
         }
@@ -52,9 +51,6 @@ export default function RootLayout() {
         registerForPushNotifications();
     }, []);
 
-  if (!fontsLoaded) {
-    return null; // Prevent rendering until check is done
-  }
     if (!appIsReady) {
         return <LoadingScreen />; // Show loading screen
     }
