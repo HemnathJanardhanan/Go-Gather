@@ -44,13 +44,31 @@
             "./assets/fonts/Nunito-Bold.ttf",
             "./assets/fonts/Nunito-Medium.ttf",
             "./assets/fonts/Nunito-Regular.ttf"
-          
-        ]
+          ]
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "mode": "automatic",
+          "android": {
+            "useGoogleServicesJson": true
+          },
+          "ios": {
+            "allowAlert": true,
+            "allowBadge": true,
+            "allowSound": true,
+            "allowCriticalAlerts": true
+          }
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "API_URL": "http://10.11.153.117:3000/api"
     }
   }
 }
+

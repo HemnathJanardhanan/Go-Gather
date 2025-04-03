@@ -21,9 +21,7 @@ const Search = () => {
         <Image source={icons.search} className='size-5'></Image>
         <TextInput value={search} onChangeText={handleSearch} placeholder="Search for Events" className='text-sm font-nunito text-black-300 ml-2 flex-1'></TextInput>
       </View>
-      <TouchableOpacity >
-        <Image source={icons.filter} className='size-5'></Image>
-      </TouchableOpacity>
+
     </View>
   )
 }

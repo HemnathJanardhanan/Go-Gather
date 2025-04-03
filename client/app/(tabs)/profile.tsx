@@ -32,12 +32,12 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.multiRemove(["token", "user"]);
-      await AsyncStorage.setItem("hasSeenWelcome", "false");
+      // await AsyncStorage.setItem("hasSeenWelcome", "false");
 
       const token = await AsyncStorage.getItem("token"); // Check if it's removed
       console.log("Token after logout:", token); // Should be null
 
-      router.replace("/");
+      router.replace("/auth/login");
     } catch (error) {
       console.error("Logout Error:", error);
       Alert.alert("Error", "Failed to logout. Try again.");
@@ -66,7 +66,7 @@ const Profile = () => {
 
           <View className='flex flex-col mt-10'>
             <SettingsItem icon={icons.calendar} title="My Bookings" onPress={() => router.push('/events/bookings') } />
-            <SettingsItem icon={icons.calendar} title="My Events" onPress={() => router.push('/events/myevents')  }/>
+            <SettingsItem icon={icons.calendar} title="My Events" onPress={() => router.push('/profile/myevents')  }/>
           </View>
 
           <View className='flex flex-col mt-5 border-t pt-5 border-primary-200'>

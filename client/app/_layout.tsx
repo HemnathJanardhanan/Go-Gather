@@ -1,56 +1,87 @@
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
 
 import "./global.css";
+import LoadingScreen from "@/app/LoadingScreen";
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+    }),
+});
 
 export default function RootLayout() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+    const [appIsReady, setAppIsReady] = useState(false);
+    const [userToken, setUserToken] = useState<string | null>(null);
+    const [fontsLoaded] = useFonts({
+        "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
+        "Nunito-Medium": require("../assets/fonts/Nunito-Medium.ttf"),
+        "Nunito-Regular": require("../assets/fonts/Nunito-Regular.ttf"),
+        "Nunito-ExtraBold": require("../assets/fonts/Nunito-ExtraBold.ttf"),
+        "Nunito-ExtraLight": require("../assets/fonts/Nunito-ExtraLight.ttf"),
+        "Nunito-SemiBold": require("../assets/fonts/Nunito-SemiBold.ttf"),
+        "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
+    });
+    useEffect(() => {
+        const prepareApp = async () => {
+            try {
+                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulated delay
+                const token = await AsyncStorage.getItem("token");
+                console.log("Fetched token from storage:", token);
 
-  const [fontsLoaded] = useFonts({
-    "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
-    "Nunito-Medium": require("../assets/fonts/Nunito-Medium.ttf"),
-    "Nunito-Regular": require("../assets/fonts/Nunito-Regular.ttf"),
-    "Nunito-ExtraBold": require("../assets/fonts/Nunito-ExtraBold.ttf"),
-    "Nunito-ExtraLight": require("../assets/fonts/Nunito-ExtraLight.ttf"),
-    "Nunito-SemiBold": require("../assets/fonts/Nunito-SemiBold.ttf"),
-    "Nunito-Light": require("../assets/fonts/Nunito-Light.ttf"),
-  });
+                setUserToken(token ?? null); // ✅ Update state first
+                await SplashScreen.hideAsync(); // ✅ Hide splash screen after state update
+                setAppIsReady(true);
+            } catch (error) {
+                console.error("Error loading app:", error);
+                setAppIsReady(true); // Ensure app doesn't get stuck in loading
+            }
+        };
 
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-      const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-      if (hasSeenWelcome === null) {
-        await AsyncStorage.setItem("hasSeenWelcome", "true");
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(false);
-      }
-    };
+        if (fontsLoaded) {
+            prepareApp();
+        }
+    }, [fontsLoaded]);
 
-    checkFirstLaunch();
-  }, []);
+// ✅ Log state only when it actually updates
+    useEffect(() => {
+        console.log("Updated userToken state:", userToken);
+    }, [userToken]);
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    useEffect(() => {
+        const registerForPushNotifications = async () => {
+            const { status } = await Notifications.getPermissionsAsync();
+            if (status !== "granted") {
+                await Notifications.requestPermissionsAsync();
+            }
+        };
+
+        registerForPushNotifications();
+    }, []);
+
+    if (!appIsReady || userToken === null) {
+        return <LoadingScreen />; // ✅ Wait until token is checked
     }
-  }, [fontsLoaded]);
 
-  if (!fontsLoaded || isFirstLaunch === null) {
-    return null; // Prevent rendering until check is done
-  }
-
-  return (
-      <Stack
-          screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index"/>
-        <Stack.Screen name="auth/login"/>
-        <Stack.Screen name="auth/signup"/>
-        <Stack.Screen name="(tabs)" />
-
+    return (
+        <Stack key={userToken ? "authenticated" : "unauthenticated"} screenOptions={{ headerShown: false }}>
+            {userToken ? (
+                <Stack.Screen name="(tabs)" />
+                ) : (
+                <>
+                    <Stack.Screen name="index" />
+                    <Stack.Screen name="auth/login" />
+                    <Stack.Screen name="auth/signup" />
+                </>
+                )
+            }
         </Stack>
-  );
+    );
+
 }
