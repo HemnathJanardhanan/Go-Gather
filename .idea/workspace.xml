@@ -5,45 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec46ee33-6d89-4e2a-946d-c84fa6e7a952" name="Changes" comment="Merge conflict resolved">
-      <change afterPath="$PROJECT_DIR$/client/.eslintrc.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/LoadingScreen.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/_layout_BACKUP_11562.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/_layout_BASE_11562.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/_layout_LOCAL_11562.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/_layout_REMOTE_11562.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/events/explore.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/profile/ProfileSetup.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/profile/[id].tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/app/profile/myevents.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/icons/appicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/icons/delete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/images/offer.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/images/offer.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/lottie/CamelLoad.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/assets/lottie/celebrate.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/components/BannerVideo.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/components/CelebrateAnimation.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/(tabs)/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/(tabs)/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/app/(tabs)/postEvent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/(tabs)/postEvent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/auth/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/auth/login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/auth/signup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/auth/signup.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/events/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/events/[id].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/events/bookings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/events/bookings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/EventCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/components/EventCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/search.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/components/search.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/constants/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/constants/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/constants/icons.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/constants/icons.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/constants/images.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/constants/images.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/image.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/image.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,10 +24,39 @@
     &quot;assignee&quot;: &quot;HemnathJanardhanan&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="mongoBackend" />
+                    <option name="lastUsedInstant" value="1743760228" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="mongo_celin" />
+                    <option name="lastUsedInstant" value="1743754165" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1743753425" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:HemnathJanardhanan/Go-Gather.git&quot;,
-    &quot;accountId&quot;: &quot;2f43fc52-33a5-4532-a1f0-fd6f59ff5e3d&quot;
+    &quot;url&quot;: &quot;https://github.com/HemnathJanardhanan/Go-Gather.git&quot;,
+    &quot;accountId&quot;: &quot;867cc081-2d98-45ec-9e7a-c9d12b5da84d&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -84,7 +78,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "web-ide.project.structure",
-    "ts.external.directory.path": "/home/hemnath/WebstormProjects/Go-Gather/client/node_modules/typescript/lib",
+    "ts.external.directory.path": "/home/p-sheena-celin/WebstormProjects/Go-Gather/client/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -116,6 +110,7 @@
       <workItem from="1743424813951" duration="2921000" />
       <workItem from="1743510271887" duration="601000" />
       <workItem from="1743700952741" duration="929000" />
+      <workItem from="1743753944064" duration="5695000" />
     </task>
     <servers />
   </component>
