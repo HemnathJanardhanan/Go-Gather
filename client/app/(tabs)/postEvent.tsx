@@ -108,16 +108,41 @@ const EventForm = () => {
       progress.value = withSpring((step - 2) * 33.3);
     }
   };
-
   const handleSubmit = async () => {
-    if (!eventData.title || !eventData.description || !eventData.location.city || !eventData.date) {
+    if (
+      !eventData.title ||
+      !eventData.description ||
+      !eventData.location.venue ||
+      !eventData.location.area ||
+      !eventData.location.city ||
+      !eventData.location.state ||
+      !eventData.location.pincode ||
+      !eventData.location.mapLink ||
+      !eventData.date ||
+      !eventData.image ||
+      !eventData.noOfSeats ||
+      !eventData.price ||
+      !eventData.category
+    ) {
       Alert.alert("Error", "Please fill in all required fields.");
       return;
     }
+  
     try {
       const token = await AsyncStorage.getItem("token");
-      await axios.post(API_URL, eventData, { headers: { Authorization: `Bearer ${token}` } });
+  
+      // Ensure date is sent in proper ISO format
+      const formattedEventData = {
+        ...eventData,
+        date: new Date(eventData.date).toISOString(),
+      };
+  
+      await axios.post(API_URL, formattedEventData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
       Alert.alert("Success", "Event created successfully!");
+      
       setEventData({
         title: "",
         description: "",
@@ -131,25 +156,32 @@ const EventForm = () => {
         },
         date: "",
         image: "",
-        noOfSeats: 0,
+        noOfSeats: 1, // Changed from 0 to 1 (minimum valid value)
         price: 0,
         category: "",
       });
+  
       setStep(1);
-      // Reset input fields (if refs are being used)
+  
+      // Reset input fields if refs are used
       Object.values(inputRefs).forEach((ref) => ref.current?.clear());
+  
       router.replace("/");
-      setTimeout(()=>{router.push("/profile/myevents");},1000);
-
+      setTimeout(() => {
+        router.push("/profile/myevents" as any);
+      }, 1000);
+  
     } catch (error: unknown) {
+      console.error("Event creation failed:", error);
+  
       if (axios.isAxiosError(error)) {
         Alert.alert("Error", error.response?.data?.error || "Something went wrong.");
       } else {
         Alert.alert("Error", "An unexpected error occurred.");
       }
     }
-
   };
+  
 
   return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

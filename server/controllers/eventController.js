@@ -4,8 +4,8 @@ import User from "../models/User.js";
 // 📌 Create Event
 export const createEvent = async (req, res) => {
     try {
-        const { title, description, location, date, image, noOfSeats } = req.body;
-        const userId = req.user; // Extracted from authMiddleware
+        const { title, description, location, date, image, noOfSeats, price, category } = req.body;
+        const userId = req.user;
 
         if (!noOfSeats || noOfSeats < 1) {
             return res.status(400).json({ error: "Number of seats must be at least 1" });
@@ -14,17 +14,17 @@ export const createEvent = async (req, res) => {
         const newEvent = new Event({
             title,
             description,
-            location,
+            location,  // Now matches the expected frontend format
             date,
             image,
-            noOfSeats,  // Added to schema
+            noOfSeats,
+            price,  // Now included
+            category, // Now included
             createdBy: userId,
             attendees: [],
         });
 
         await newEvent.save();
-
-        // Add event to user's hostedEvents array
         await User.findByIdAndUpdate(userId, { $push: { hostedEvents: newEvent._id } });
 
         res.status(201).json(newEvent);

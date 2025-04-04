@@ -37,12 +37,41 @@ interface EventData {
     attendees: any;
 }
 
+interface UserProfile {
+    name: string;
+    email: string;
+    profilePhoto?: string;
+}
+
 export default function Index() {
     const router = useRouter();
     const [events,setEvents] = useState<EventData[]>([]);
     const [featuredEvents,setFeaturedEvents] = useState<EventData[]>([]);
     const [freeEvents,setFreeEvents] = useState<EventData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [user, setUser] = useState<UserProfile | null>(null);    
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) return;
+                
+                const res = await axios.get<UserProfile>(`${API_URL}/user/profile`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (res.status === 200) {
+                    setUser(res.data);
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -72,11 +101,11 @@ export default function Index() {
                     <View className="flex flex-row items-center justify-between mt-5">
                         <View className="flex flex-row items-center">
                             <Pressable onPress={() => router.push("/profile")}>
-                                <Image source={images.avatar} className="size-12 rounded-full" />
+                                <Image source={user?.profilePhoto ? { uri: user.profilePhoto } : images.avatar} className="size-12 rounded-full" />
                             </Pressable>
                             <View className="flex flex-col items-start ml-2 justify-center">
                                 <Text className="text-xs font-nunito text-black-100">Good Morning</Text>
-                                <Text className="text-base font-nunito-medium text-black-300">UserName</Text>
+                                <Text className="text-base font-nunito-medium text-black-300">{user?.name || "Guest"}</Text>
                             </View>
                         </View>
                         <Image source={icons.bell} className="size-6" />
