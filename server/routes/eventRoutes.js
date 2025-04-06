@@ -7,7 +7,7 @@ const router = express.Router();
 // 📌 Create Event (Protected)
 router.post("/", authMiddleware, createEvent);
 
-// 📌 Get All Events (Public)
+// 📌 Get All Events (Public)git
 router.get("/", getEvents);
 router.get("/my-hosted", authMiddleware, getMyHostedEvents);
 // 📌 Get Single Event by ID (Public)
