@@ -35,7 +35,7 @@ export const updateProfilePhoto = async (req, res) => {
         // If user already has a profile photo, delete the old one from Supabase
         if (user.profilePhoto) {
             const fileName = user.profilePhoto.split("/").pop(); // Extract filename from URL
-            await supabase.storage.from("profile_pictures").remove([`profiles/${fileName}`]);
+            await supabase.storage.from("profiles").remove([`profiles/${fileName}`]);
         }
 
         // Generate a new unique file path
@@ -43,7 +43,7 @@ export const updateProfilePhoto = async (req, res) => {
 
         // Upload the new image
         const { data, error } = await supabase.storage
-            .from("profile_pictures")
+            .from("profiles")
             .upload(filePath, imageFile.buffer, { contentType: imageFile.mimetype });
 
         if (error) {
@@ -52,7 +52,7 @@ export const updateProfilePhoto = async (req, res) => {
         }
 
         // Get the new public URL
-        const { data: publicURLData } = supabase.storage.from("profile_pictures").getPublicUrl(filePath);
+        const { data: publicURLData } = supabase.storage.from("profiles").getPublicUrl(filePath);
         const profileImageUrl = publicURLData.publicUrl;
 
         // Update user's profile in MongoDB
@@ -79,9 +79,10 @@ export const uploadProfilePicture = async (req, res) => {
         // Generate a unique filename
         const filePath = `profiles/${userId}_${Date.now()}.jpg`;
 
+
         // Upload image to Supabase Storage
         const { data, error } = await supabase.storage
-            .from("profile_pictures")
+            .from("profiles")
             .upload(filePath, imageFile.buffer, { contentType: imageFile.mimetype });
 
         if (error) {
@@ -92,7 +93,7 @@ export const uploadProfilePicture = async (req, res) => {
         // Generate a public URL for the uploaded image
         const { data: publicURLData, error: urlError } = supabase
             .storage
-            .from("profile_pictures")
+            .from("profiles")
             .getPublicUrl(filePath);
 
         if (urlError || !publicURLData.publicUrl) {

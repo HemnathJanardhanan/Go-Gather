@@ -9,8 +9,10 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import CelebrateAnimation from "@/components/CelebrateAnimation";
+import LoadingScreen from "@/app/LoadingScreen";
 
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000/api";
 
 
@@ -28,6 +30,7 @@ interface Event {
     };
     price: number;
     noOfSeats: number;
+    remainingSeats: number;
 }
 
 
@@ -39,22 +42,30 @@ const EventDetails = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [seats, setSeats] = useState(1);
     const [success, setSuccess] = useState(false);
+    const [refreshFlag, setRefreshFlag] = useState(false);
+    const fetchEventDetails = async () => {
+        setLoading(true);
+        try {
+
+            const response = await axios.get(`${API_URL}/events/${id}`);
+            setEvent(response.data);
+        } catch (error) {
+            console.error("Error fetching event details:", error);
+            Alert.alert("Error", "Failed to load event details. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchEventDetails = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get(`${API_URL}/events/${id}`);
-                setEvent(response.data);
-            } catch (error) {
-                console.error("Error fetching event details:", error);
-                Alert.alert("Error", "Failed to load event details. Please try again.");
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchEventDetails();
     }, [id]);
 
+    useFocusEffect(
+
+        useCallback(() => {
+            fetchEventDetails(); // 👈 This is your API call to get latest event info
+        }, [refreshFlag])
+    );
     const registerForPushNotifications = async () => {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
@@ -95,9 +106,9 @@ const EventDetails = () => {
             }
 
             const response = await axios.post(
-                `${API_URL}/rsvp`,
-                { eventId: id, seats },
-                { headers: { Authorization: `Bearer ${token}`} }
+                `${API_URL}/rsvp/${id}`, // 👈 put the eventId in URL
+                { seats },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
 
@@ -113,6 +124,9 @@ const EventDetails = () => {
             //Alert.alert("Success", "RSVP confirmed!");
             setModalVisible(false);
             setSuccess(true);
+            setTimeout(async () => {setRefreshFlag(true)},3000)
+
+
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 Alert.alert("Error", error.response?.data?.error || "RSVP failed");
@@ -136,9 +150,9 @@ const EventDetails = () => {
 
     if (loading) {
         return (
-            <View className="flex-1 justify-center items-center bg-white">
-                <ActivityIndicator size="large" color="#191d31" />
-            </View>
+            <Modal transparent visible={loading} animationType="fade">
+                <LoadingScreen />
+            </Modal>
         );
     }
 
@@ -175,7 +189,7 @@ const EventDetails = () => {
 
                     <View className="mt-4 flex-row justify-between items-center">
                         <Text className="text-xl font-semibold text-green-600">{event.price > 0 ? `₹${event.price}` : "Free"}</Text>
-                        <Text className="text-md text-gray-800">Seats Available: {event.noOfSeats}</Text>
+                        <Text className="text-md text-gray-800">Seats Available: {event.remainingSeats}</Text>
                     </View>
 
                     <TouchableOpacity onPress={() => setModalVisible(true)} className="bg-orange-500 p-4 mt-6 rounded-lg">

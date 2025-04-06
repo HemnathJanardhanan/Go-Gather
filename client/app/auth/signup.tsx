@@ -47,6 +47,7 @@ const SignUp = () => {
         console.log("Payload:", { name, email, password });  // Log request payload
 
         try {
+
             const response = await axios.post(API_URL, { name, email, password });
 
             await AsyncStorage.setItem("token", response.data.token);

@@ -4,20 +4,27 @@ import { useRouter } from 'expo-router';
 import images from '@/constants/images';
 import icons from '@/constants/icons';
 
+interface Location {
+  venue: string;
+  area: string;
+  city: string;
+  state: string;
+  pincode: number;
+  mapLink: string;
+}
+
 interface CardProps {
+  id: string;
   title: string;
-  location: string;
+  location: Location;
   price: number;
   category: string;
-  image: any;
-  id: string; // Unique identifier for navigation
+  image: string; // if it's a URL (likely)
 }
-interface EventCardProps {
-  title: string;
-  location: string;
-  price: string;
-  id: string; // Unique identifier for navigation
-}
+
+// If you just need a preview version of CardProps
+type EventCardProps = Pick<CardProps, "id" | "title" | "location" | "price">;
+
 
 export const FeaturedCard = ({ title, location, price, category, image, id }: CardProps) => {
   const router = useRouter();
@@ -31,9 +38,7 @@ export const FeaturedCard = ({ title, location, price, category, image, id }: Ca
         <Image source={images.cardGradient} className="size-full rounded-2xl absolute bottom-0" />
 
         <View className="flex flex-col items-start absolute bottom-5 inset-x-5">
-          <Text className="text-xl font-nunito-bold text-white" numberOfLines={1}>
-            {title}
-          </Text>
+          <Text className="text-xl font-nunito-bold text-white" numberOfLines={1}>{title}</Text>
           <Text className="text-base font-nunito text-white">{category}</Text>
           <View className="flex flex-row items-center justify-between w-full">
             <Text className="text-xl font-nunito-bold text-white">{price > 0 ? `₹${price}` : "Free"}</Text>
@@ -42,27 +47,23 @@ export const FeaturedCard = ({ title, location, price, category, image, id }: Ca
       </TouchableOpacity>
   );
 };
-export  const EditEventCard = ({ title, location, price, id }: EventCardProps) => {
+
+export const EditEventCard = ({ title, location, price, id }: EventCardProps) => {
   return (
       <TouchableOpacity>
-      <View className="flex-1 flex-row justify-between w-full h-45 rounded-3xl bg-gray-100 shadow-lg shadow-black-100/70 p-5 mb-6">
-        <View>
-        <Text className="text-2xl font-extrabold">{title}</Text>
-        <Text className="text-md font-nunito">{location}</Text>
-        <Text className="text-lg font-nunito text-green-500">{`Rs. ${price}`}</Text>
+        <View className="flex-1 flex-row justify-between w-full h-45 rounded-3xl bg-gray-100 shadow-lg shadow-black-100/70 p-5 mb-6">
+          <View>
+            <Text className="text-2xl font-extrabold">{title}</Text>
+            <Text className="text-md font-nunito">{location.city}</Text>
+            <Text className="text-lg font-nunito text-green-500">{price > 0 ? `₹${price}` : "Free"}</Text>
+          </View>
+          <TouchableOpacity>
+            <Image source={icons.del} className="size-12" />
+          </TouchableOpacity>
         </View>
-        <View>
-        <TouchableOpacity>
-          <Image source={icons.del} className="size-12"/>
-        </TouchableOpacity>
-        </View>
-      </View>
       </TouchableOpacity>
-  )
-
-
-}
-
+  );
+};
 
 
 export const Cards = ({ title, location, price, category, image, id }: CardProps) => {
@@ -73,13 +74,13 @@ export const Cards = ({ title, location, price, category, image, id }: CardProps
           onPress={() => router.push(`/events/${id}`)}
           className="flex-1 w-60 h-45 mt-5 mx-2 pd-2 rounded-2xl bg-white shadow-lg shadow-black-100/70 relative"
       >
-        <Image source={image} className="w-full h-40 rounded-lg" />
+        <Image source={typeof image === "string" ? { uri: image } : image} className="w-full h-40 rounded-lg" />
 
         <View className="flex flex-col mt-2 px-2">
           <Text className="text-base font-nunito-bold text-black-300">{title}</Text>
           <Text className="text-xs font-nunito text-black-200">{category}</Text>
           <View className="flex flex-row items-center justify-between mt-2">
-            <Text className="text-base font-nunito-bold text-primary-300">{price}</Text>
+            <Text className="text-base font-nunito-bold text-primary-300">{price > 0 ? `₹${price}` : "Free"}</Text>
           </View>
         </View>
       </TouchableOpacity>

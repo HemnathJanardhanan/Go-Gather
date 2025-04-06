@@ -11,17 +11,29 @@ import LoadingScreen from "@/app/LoadingScreen";
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`; // Updated API URL
 
-type Event = {
-    id: string;
+
+interface Location {
+    venue: string;
+    area: string;
+    city: string;
+    state: string;
+    pincode: number;
+    mapLink: string;// Ensure this is a number
+}
+
+interface Event {
+    id:string;
     title: string;
-    location: {
-        venue: string;
-        city: string;
-    };
+    description: string;
+    location: Location;
     date: string;
     image: string;
+    noOfSeats: number;
+    remainingSeats: number;
     price: number;
-};
+    category: string;
+    attendees: any;
+}
 
 const MyEventsScreen = () => {
     const [events, setEvents] = useState<Event[]>([]);
@@ -40,8 +52,12 @@ const MyEventsScreen = () => {
                 const response = await axios.get(API_URL, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                const normalizedEvents = response.data.map((event:any) => ({
+                    ...event,
+                    id: (event as any)._id, // rename _id to id
+                }));
+                setEvents(normalizedEvents);
 
-                setEvents(response.data);
             } catch (error) {
                 console.error("Error fetching events:", error);
                 Alert.alert("Error", "Failed to load events. Please try again.");

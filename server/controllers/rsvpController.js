@@ -5,25 +5,39 @@ import User from "../models/User.js";
 export const rsvpEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
-        const userId = req.user;
+        const { seats } = req.body;
+        const userId = req.user.id;
+
+        if (!seats || seats <= 0) {
+            return res.status(400).json({ error: "Invalid number of seats" });
+        }
 
         const event = await Event.findById(eventId);
         if (!event) return res.status(404).json({ error: "Event not found" });
 
-        // Check if already RSVP'd
-        if (event.attendees.includes(userId)) {
+        // Check if user already RSVP'd
+        const alreadyRSVPed = event.attendees.find(
+            (attendee) => attendee.user.toString() === userId
+        );
+        if (alreadyRSVPed) {
             return res.status(400).json({ error: "Already RSVP'd to this event" });
         }
-
-        // Add user to event attendees list
-        event.attendees.push(userId);
+        if (event.remainingSeats < seats) {
+            return res.status(400).json({ error: "Not enough seats available" });
+        }
+        event.remainingSeats -= seats;
+        // Push { user, seats } into attendees array
+        event.attendees.push({ user: userId, seats });
         await event.save();
 
-        // Add event to user's bookedEvents list
-        await User.findByIdAndUpdate(userId, { $push: { bookedEvents: eventId } });
+        // Update user's bookedEvents
+        await User.findByIdAndUpdate(userId, {
+            $push: { bookedEvents: eventId },
+        });
 
         res.json({ message: "RSVP successful", event });
     } catch (error) {
+        console.error("RSVP Error:", error);
         res.status(500).json({ error: "Failed to RSVP" });
     }
 };
