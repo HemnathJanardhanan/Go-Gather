@@ -14,12 +14,13 @@ export const createEvent = async (req, res) => {
         const newEvent = new Event({
             title,
             description,
-            location,  // Now matches the expected frontend format
+            location,
             date,
             image,
             noOfSeats,
-            price,  // Now included
-            category, // Now included
+            remainingSeats: noOfSeats, // 👈 Automatically set remainingSeats
+            price,
+            category,
             createdBy: userId,
             attendees: [],
         });

@@ -12,6 +12,8 @@ import { Platform } from 'react-native';
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import DropDownPicker from 'react-native-dropdown-picker';
+
+
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
 interface Location {
@@ -32,8 +34,8 @@ interface EventData {
   noOfSeats: number;
   price: number;
   category: string;
-
 }
+
 
 const EventForm = () => {
   const router = useRouter();
@@ -226,9 +228,7 @@ const EventForm = () => {
       // router.replace("/");
       // setTimeout(()=>{router.push("/profile/myevents");},1000);
       router.replace("/");
-      setTimeout(() => {
-        router.push("/profile/myevents" as any);
-      }, 1000);
+
 
       setTimeout(() => router.push("/profile/myevents"), 1000);
 

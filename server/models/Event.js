@@ -12,14 +12,20 @@ const LocationSchema = new mongoose.Schema({
 const EventSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    location: { type: LocationSchema, required: true }, // Embedded location object
+    location: { type: LocationSchema, required: true },
     date: { type: Date, required: true },
-    image: { type: String, required: true }, // Changed from array to string
-    noOfSeats: { type: Number, required: true },  
-    price: { type: Number, required: true }, // New field
-    category: { type: String, required: true }, // New field
+    image: { type: String, required: true },
+    noOfSeats: { type: Number, required: true },
+    remainingSeats: { type: Number, required: true }, // 👈 ADD THIS
+    price: { type: Number, required: true },
+    category: { type: String, required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    attendees: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            seats: { type: Number, required: true }
+        }
+    ],
 }, { timestamps: true });
 
 const Event = mongoose.model("Event", EventSchema);

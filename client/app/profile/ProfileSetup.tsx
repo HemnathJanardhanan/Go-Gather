@@ -1,21 +1,24 @@
-import { useState } from "react";
-import { View, Text, Image, TouchableOpacity, ActivityIndicator } from "react-native";
-import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
+import React, { useState } from "react";
+import {Alert, View, Text, Image, TouchableOpacity, Modal} from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { router } from "expo-router";
 import images from "@/constants/images";
 import axios from "axios";
 import Constants from "expo-constants";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from "@/app/LoadingScreen";
+
+
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
-
-
 export default function ProfileSetup() {
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const pickImage = async () => {
-        const result = await launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Images,
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [1, 1],
             quality: 0.8,
@@ -49,38 +52,38 @@ export default function ProfileSetup() {
             return;
         }
         setLoading(true);
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) throw new Error("No token found");
 
-        const formData = new FormData();
-        formData.append("profileImage", {
-            uri: profileImage,
-            name: "profile.jpg",
-            type: "image/jpeg",
-        } as any);
-        setLoading(false);
-        router.replace("/");
+            const formData = new FormData();
+            formData.append("profilePicture", {
+                uri: profileImage,
+                name: "profile.jpg",
+                type: "image/jpeg",
+            } as any);
 
-        //
-        // try {
-        //     const response = await axios.post(API_URL, formData, {
-        //         headers: {
-        //             "Content-Type": "multipart/form-data",
-        //         },
-        //     });
-        //     if (response.status === 200) {
-        //         router.replace("/");
-        //     } else {
-        //         alert("Error saving profile");
-        //     console.log(formData)
-        //     }
-        // } catch (error) {
-        //     console.error("Error:", error);
-        // } finally {
-        //     setLoading(false);
-        // }
+            const response = await axios.post(`${API_URL}/users/upload-profile`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+
+                router.replace("/(tabs)"); // Navigate to homepage or dashboard
+        } catch (error) {
+            console.error("Upload Error:", error);
+            Alert.alert("Error", "An error occurred while uploading.");
+        } finally {
+            setLoading(false);
+        }
+
     };
 
     return (
         <View className="flex-1 items-center justify-center bg-white p-4">
+
             <Text className="text-lg font-semibold mb-4">Set Up Your Profile</Text>
 
             <TouchableOpacity onPress={pickImage}>
@@ -96,7 +99,9 @@ export default function ProfileSetup() {
                 className="mt-6 px-4 py-2 bg-blue-500 rounded-lg"
                 disabled={loading}
             >
-                {loading ? <ActivityIndicator color="white" /> : <Text className="text-white">Finish Setup</Text>}
+                {loading ? <Modal transparent visible={loading}>
+                    <LoadingScreen />
+                </Modal>: <Text className="text-white">Finish Setup</Text>}
             </TouchableOpacity>
         </View>
     );
