@@ -11,7 +11,7 @@ const Bookings = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <Text className="font-nunito-ExtraBold text-4xl my-6">My Bookings</Text>
-                    <EditEventCard title="test" location="test" price="500" id="1" />
+                    {/*<EditEventCard title="test" location="test" price="500" id="1" />*/}
                 </View>
             </ScrollView>
         </SafeAreaView>

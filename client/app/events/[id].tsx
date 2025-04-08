@@ -13,7 +13,11 @@ import LoadingScreen from "@/app/LoadingScreen";
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+
+
+
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000/api";
+
 
 
 

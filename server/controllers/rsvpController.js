@@ -1,7 +1,8 @@
 import Event from "../models/Event.js";
+
+import { sendRSVPConfirmation } from "../utils/sendEmail.js";
 import User from "../models/User.js";
 
-// 📌 RSVP to an Event
 export const rsvpEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -34,6 +35,10 @@ export const rsvpEvent = async (req, res) => {
         await User.findByIdAndUpdate(userId, {
             $push: { bookedEvents: eventId },
         });
+        const user = await User.findById(userId);
+        if (user?.email) {
+            await sendRSVPConfirmation(user.email, user.name, event.title, seats);
+        }
 
         res.json({ message: "RSVP successful", event });
     } catch (error) {

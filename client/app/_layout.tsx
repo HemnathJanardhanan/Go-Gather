@@ -65,7 +65,7 @@ export default function RootLayout() {
         registerForPushNotifications();
     }, []);
 
-    if (!appIsReady || userToken === null) {
+    if (!appIsReady) {
         return <LoadingScreen />; // ✅ Wait until token is checked
     }
 

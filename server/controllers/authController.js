@@ -2,6 +2,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { sendWelcomeEmail } from "../utils/sendEmail.js";
+import user from "../models/User.js";
 
 export const signup = async (req, res) => {
     try {
@@ -34,6 +36,8 @@ export const signup = async (req, res) => {
             token
         });
 
+        await sendWelcomeEmail(email, name);
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Signup failed" });
@@ -47,9 +51,9 @@ export const login = async (req, res) => {
 
         // Check if user exists
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ error: "Invalid email or password" });
-        }
+        // if (!user) {
+        //     return res.status(400).json({ error: "Invalid email or password" });
+        // }
 
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
