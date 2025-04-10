@@ -5,7 +5,7 @@ import User from "../models/User.js";
 export const createEvent = async (req, res) => {
     try {
         const { title, description, location, date, image, noOfSeats, price, category } = req.body;
-        const userId = req.user;
+        const userId = req.user.id;
 
         if (!noOfSeats || noOfSeats < 1) {
             return res.status(400).json({ error: "Number of seats must be at least 1" });
@@ -66,7 +66,7 @@ export const updateEvent = async (req, res) => {
         if (!event) return res.status(404).json({ error: "Event not found" });
 
         // Only the creator can update the event
-        if (event.createdBy.toString() !== req.user) {
+        if (event.createdBy.toString() !== req.user.id) {
             return res.status(403).json({ error: "Unauthorized to update this event" });
         }
 
@@ -89,14 +89,14 @@ export const deleteEvent = async (req, res) => {
         if (!event) return res.status(404).json({ error: "Event not found" });
 
         // Only the creator can delete the event
-        if (event.createdBy.toString() !== req.user) {
+        if (event.createdBy.toString() !== req.user.id) {
             return res.status(403).json({ error: "Unauthorized to delete this event" });
         }
 
         await Event.findByIdAndDelete(req.params.id);
 
         // Remove event from user's hostedEvents
-        await User.findByIdAndUpdate(req.user, { $pull: { hostedEvents: req.params.id } });
+        await User.findByIdAndUpdate(req.user.id, { $pull: { hostedEvents: req.params.id } });
 
         res.json({ message: "Event deleted successfully" });
     } catch (error) {

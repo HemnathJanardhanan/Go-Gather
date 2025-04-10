@@ -31,10 +31,9 @@ export default function RootLayout() {
     useEffect(() => {
         const prepareApp = async () => {
             try {
-                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulated delay
                 const token = await AsyncStorage.getItem("token");
+                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulated delay
                 console.log("Fetched token from storage:", token);
-
                 setUserToken(token ?? null); // ✅ Update state first
                 await SplashScreen.hideAsync(); // ✅ Hide splash screen after state update
                 setAppIsReady(true);
@@ -44,16 +43,12 @@ export default function RootLayout() {
             }
         };
 
-        if (fontsLoaded) {
+        if (fontsLoaded ) {
             prepareApp();
         }
     }, [fontsLoaded]);
 
-// ✅ Log state only when it actually updates
-    useEffect(() => {
-        console.log("Updated userToken state:", userToken);
-    }, [userToken]);
-
+// ✅
     useEffect(() => {
         const registerForPushNotifications = async () => {
             const { status } = await Notifications.getPermissionsAsync();
@@ -65,7 +60,7 @@ export default function RootLayout() {
         registerForPushNotifications();
     }, []);
 
-    if (!appIsReady) {
+    if (!fontsLoaded || !appIsReady) {
         return <LoadingScreen />; // ✅ Wait until token is checked
     }
 

@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect } from "react";
-import { View, Text, TextInput, Button,TouchableOpacity, Alert, ScrollView ,Keyboard, TouchableWithoutFeedback,} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView ,Keyboard, TouchableWithoutFeedback,} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {FadeInDown,useSharedValue, withSpring} from "react-native-reanimated";
 import { useRouter } from "expo-router";
@@ -12,8 +12,7 @@ import { Platform } from 'react-native';
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import DropDownPicker from 'react-native-dropdown-picker';
-
-
+import { useEventForm } from "../../hooks/useEventForm";
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
@@ -128,7 +127,6 @@ const EventForm = () => {
 
 
 
-
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -172,6 +170,7 @@ const EventForm = () => {
 
 
   const handleSubmit = async () => {
+    console.log(eventData)
     if (
       !eventData.title ||
       !eventData.description ||
@@ -182,10 +181,7 @@ const EventForm = () => {
       !eventData.location.pincode ||
       !eventData.location.mapLink ||
       !eventData.date ||
-      !eventData.image ||
-      !eventData.noOfSeats ||
-      !eventData.price ||
-      !eventData.category
+      !eventData.noOfSeats
     ) {
       Alert.alert("Error", "Please fill in all required fields.");
       return;
@@ -194,13 +190,7 @@ const EventForm = () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      // Ensure date is sent in proper ISO format
-      const formattedEventData = {
-        ...eventData,
-        date: new Date(eventData.date).toISOString(),
-      };
-
-      await axios.post(API_URL, formattedEventData, {
+      await axios.post(API_URL, eventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -247,12 +237,17 @@ const EventForm = () => {
       }
     }
   };
+  useEffect(() => {
+    if (category) {
+      handleChange("category", category);
+    }
+  }, [category]);
 
 
   return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView className="flex-1 bg-white p-5">
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <View>
 
           <View>
             <Text className="text-4xl font-nunito-bold text-black mt-6">Create Event</Text>
@@ -411,17 +406,30 @@ const EventForm = () => {
                             onChange={handleDateChange}
                         />
                     )}
-                    <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                      <TextInput
-                          placeholder="No. of Seats"
-                          keyboardType="numeric"
-                          value={eventData.noOfSeats.toString()}
-                          onChangeText={(text) => handleChange("noOfSeats", Number(text) || 0)}
-                          ref={inputRefs.noOfSeats}
-                          returnKeyType="next"
-                          onSubmitEditing={() => inputRefs.price.current?.focus()}
-                      />
-                    </Animated.View>
+
+                  </Animated.View>
+                  <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
+                    <TextInput
+                        placeholder="No. of Seats"
+                        keyboardType="numeric"
+                        value={eventData.noOfSeats.toString()}
+                        onChangeText={(text) => handleChange("noOfSeats", Number(text) || 0)}
+                        ref={inputRefs.noOfSeats}
+                        returnKeyType="next"
+                        onSubmitEditing={() => inputRefs.price.current?.focus()}
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInDown.delay(500).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
+                    <TextInput
+                        placeholder="Ticket Price (in ₹)"
+                        keyboardType="numeric"
+                        value={eventData.price.toString()}
+                        onChangeText={(text) => handleChange("price", Number(text) || 0)}
+                        ref={inputRefs.price}
+                        returnKeyType="next"
+                        onSubmitEditing={() => inputRefs.image.current?.focus()}
+                        placeholderTextColor={'gray'}
+                    />
                   </Animated.View>
 
 
@@ -433,35 +441,44 @@ const EventForm = () => {
                         placeholderTextColor={'gray'}
                         ref={inputRefs.image}
                         returnKeyType="next"
-                        onSubmitEditing={() => inputRefs.noOfSeats.current?.focus()}
+                        onSubmitEditing={() => inputRefs.category.current?.focus()}
                     />
                   </Animated.View>
 
                   <Animated.View entering={FadeInDown.delay(600).duration(1000).springify()} className="z-50 w-full">
                     <DropDownPicker
                         open={open}
-                        value={category}
+                        value={eventData.category}
                         items={items}
                         setOpen={setOpen}
                         setValue={setCategory}
+
                         setItems={setItems}
                         placeholder="Select Event Category"
-                        containerStyle={{ height: 60 }}
+                        containerStyle={{ height: 60, zIndex: 3000 }}
                         style={{
-                          backgroundColor: '#f3f4f6', // tailwind gray-100
+                          backgroundColor: '#f3f4f6',
                           borderRadius: 16,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 16,
+                          paddingVertical: 12,
                         }}
                         labelStyle={{
                           fontFamily: 'Nunito-Bold',
                           fontSize: 16,
                           color: 'black',
                         }}
+                        textStyle={{
+                          fontFamily: 'Nunito-Regular',
+                          fontSize: 16,
+                          color: '#111827',
+                        }}
                         dropDownContainerStyle={{
-                          backgroundColor: '#f9fafb', // tailwind gray-50
+                          backgroundColor: '#f9fafb',
                           borderRadius: 12,
                         }}
+                        listMode="SCROLLVIEW"
                     />
+
                   </Animated.View>
                 </View>
             )}
@@ -486,7 +503,7 @@ const EventForm = () => {
 
 
         </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
       </TouchableWithoutFeedback>
   );

@@ -1,13 +1,27 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-
+import React,{useEffect,useState} from "react";
 import icons from "@/constants/icons"; // Import logo
-import LottieView from "lottie-react-native"
-import images from "@/constants/images";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LoadingScreen from "@/app/LoadingScreen";
 const Index = () => {
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const checkToken = async () => {
+            setLoading(true);
+            const token = await AsyncStorage.getItem("token");
+            setLoading(false);
+            if (token) {
+                router.replace("/(tabs)"); // 👈 Redirect to the authenticated stack
+            }
 
+        };
+        checkToken();
+    }, [])
+    if(loading){
+        return <LoadingScreen />;
+    }
     return (
         <View className="flex-1 w-full h-full bg-accent-100 items-center justify-center p-6">
             {/* Logo */}

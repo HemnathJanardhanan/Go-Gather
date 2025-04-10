@@ -36,7 +36,7 @@ const EventDetails = () => {
     const { id } = useLocalSearchParams<{ id: string }>();
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
-
+    const router=useRouter()
     useEffect(() => {
         const fetchEventDetails = async () => {
             setLoading(true);
@@ -148,7 +148,7 @@ const EventDetails = () => {
                     </View>
 
 
-                    <TouchableOpacity className="bg-yellow-400 p-4 mt-6 rounded-lg">
+                    <TouchableOpacity className="bg-yellow-400 p-4 mt-6 rounded-lg" onPress={()=>router.push(`/editEvent/${id}`)}>
                     <Text className="text-white text-center text-lg font-semibold">Edit</Text>
                 </TouchableOpacity>
 

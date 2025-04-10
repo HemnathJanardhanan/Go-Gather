@@ -51,13 +51,13 @@ const MyEventsScreen = () => {
                 const response = await axios.get(`${API_URL}/events/my-hosted`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-
-                const normalizedEvents = response.data.hostedEvents.map((event:any) => ({
+                console.log(response.data.hostedEvents);
+                const normalizedEvents = response.data.map((event:any) => ({
                     ...event,
                     id: (event as any)._id, // rename _id to id
                 }));
                 setEvents(normalizedEvents);
-                setEvents(normalizedEvents);
+
 
             } catch (error) {
                 console.error("Error fetching hosted events:", error);
@@ -72,7 +72,7 @@ const MyEventsScreen = () => {
     }, []);
 
     const renderEvent = ({ item }: { item: Event }) => (
-        <TouchableOpacity onPress={() => router.push(`/events/${item.id}`)}>
+        <TouchableOpacity onPress={() => router.push(`/profile/${item.id}`)}>
             <View className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
                 {/* Event Image */}
                 <View className="relative">

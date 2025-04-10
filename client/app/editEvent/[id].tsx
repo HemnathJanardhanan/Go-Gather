@@ -1,9 +1,9 @@
 
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView ,Keyboard, TouchableWithoutFeedback,} from "react-native";
+import React, { useState,useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, Alert,Keyboard, TouchableWithoutFeedback,} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {FadeInDown,useSharedValue, withSpring} from "react-native-reanimated";
-import { useRouter } from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useRef } from "react";
@@ -12,7 +12,6 @@ import { Platform } from 'react-native';
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import DropDownPicker from 'react-native-dropdown-picker';
-
 
 const API_URL = `${Constants?.expoConfig?.extra?.API_URL ?? "http://192.168.29.133:3000/api"}/events`;
 
@@ -38,8 +37,10 @@ interface EventData {
 
 
 const EventForm = () => {
+    const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const [step, setStep] = useState(1);
+    const [loading, setLoading] = useState(false);
     const progress = useSharedValue(0);
     const inputRefs: { [key: string]: React.RefObject<TextInput> } = {
         title: useRef<TextInput>(null),
@@ -74,6 +75,23 @@ const EventForm = () => {
         category: "",
 
     });
+    const fetchEventDetails = async () => {
+        setLoading(true);
+        try {
+
+            const response = await axios.get(`${API_URL}/${id}`);
+            setEventData(response.data);
+        } catch (error) {
+            console.error("Error fetching event details:", error);
+            Alert.alert("Error", "Failed to load event details. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchEventDetails();
+    }, []);
+
     const [open, setOpen] = useState(false);
     const [category, setCategory] = useState('');
     const [items, setItems] = useState([
@@ -105,13 +123,14 @@ const EventForm = () => {
 
             if (reverseGeocode.length > 0) {
                 const address = reverseGeocode[0];
+
                 setEventData((prev) => ({
                     ...prev,
                     location: {
                         ...prev.location,
-                        venue: address.name || "",
+                        // 👇 Do NOT touch venue (user will manually enter it)
                         area: address.subregion || "",
-                        city: address.city || address.subregion || "",
+                        city: address.city || "",
                         state: address.region || "",
                         pincode: Number(address.postalCode) || 0,
                         mapLink: `https://www.google.com/maps?q=${location.coords.latitude},${location.coords.longitude}`,
@@ -123,6 +142,7 @@ const EventForm = () => {
             console.error(error);
         }
     };
+
 
 
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -161,13 +181,10 @@ const EventForm = () => {
             progress.value = withSpring((step - 2) * 33.3);
         }
     };
-    const isFormComplete = () => {
-        const { title, description, location, date, image, noOfSeats, price, category } = eventData;
-        return title && description && location.city && date && image && noOfSeats > 0 && price >= 0 && category;
-    };
 
 
     const handleSubmit = async () => {
+        console.log(eventData)
         if (
             !eventData.title ||
             !eventData.description ||
@@ -178,10 +195,7 @@ const EventForm = () => {
             !eventData.location.pincode ||
             !eventData.location.mapLink ||
             !eventData.date ||
-            !eventData.image ||
-            !eventData.noOfSeats ||
-            !eventData.price ||
-            !eventData.category
+            !eventData.noOfSeats
         ) {
             Alert.alert("Error", "Please fill in all required fields.");
             return;
@@ -190,46 +204,14 @@ const EventForm = () => {
         try {
             const token = await AsyncStorage.getItem("token");
 
-            // Ensure date is sent in proper ISO format
-            const formattedEventData = {
-                ...eventData,
-                date: new Date(eventData.date).toISOString(),
-            };
-
-            await axios.post(API_URL, formattedEventData, {
+            await axios.put(`${API_URL}/${id}`, eventData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            Alert.alert("Success", "Event created successfully!");
-
-            setEventData({
-                title: "",
-                description: "",
-                location: {
-                    venue: "",
-                    area: "",
-                    city: "",
-                    state: "",
-                    pincode: 0,
-                    mapLink: "",
-                },
-                date: "",
-                image: "",
-                noOfSeats: 1, // Changed from 0 to 1 (minimum valid value)
-                price: 0,
-                category: "",
-            });
-
+            Alert.alert("Success", "Event Updated successfully!");
             setStep(1);
-
-            // Reset input fields if refs are used
             Object.values(inputRefs).forEach((ref) => ref.current?.clear());
-
-            // router.replace("/");
-            // setTimeout(()=>{router.push("/profile/myevents");},1000);
-            router.replace("/");
-
-
+            router.replace("/(tabs)");
             setTimeout(() => router.push("/profile/myevents"), 1000);
 
 
@@ -243,12 +225,17 @@ const EventForm = () => {
             }
         }
     };
+    useEffect(() => {
+        if (category) {
+            handleChange("category", category);
+        }
+    }, [category]);
 
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView className="flex-1 bg-white p-5">
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <View>
 
                     <View>
                         <Text className="text-4xl font-nunito-bold text-black mt-6">Create Event</Text>
@@ -283,59 +270,110 @@ const EventForm = () => {
                         )}
 
                         {step === 2 && (
-                            <View className="flex items-center space-y-4" >
-                                <Animated.Text entering={FadeInDown.duration(1000).springify()} className="text-3xl font-nunito-bold text-black mb-3 ">Location Details</Animated.Text>
-                                <Animated.View entering={FadeInDown.delay(100).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                                    <TextInput placeholder="Venue Name"
-                                               value={eventData.location.venue}
-                                               placeholderTextColor={'gray'}
-                                               onChangeText={(text) => handleLocationChange("venue", text)}
-                                               ref={inputRefs.venue}
-                                               returnKeyType="next"
-                                               onSubmitEditing={()=>inputRefs.city.current?.focus()}  />
+                            <View className="flex items-center space-y-4">
+                                <Animated.Text
+                                    entering={FadeInDown.duration(1000).springify()}
+                                    className="text-3xl font-nunito-bold text-black mb-3"
+                                >
+                                    Location Details
+                                </Animated.Text>
+
+                                {/* 📍 Button to fetch location */}
+                                <TouchableOpacity
+                                    onPress={fetchAndSetLocation}
+                                    className="bg-blue-100 px-4 py-2 rounded-xl mb-3 self-start"
+                                >
+                                    <Text className="text-blue-700 font-semibold">📍 Use Current Location</Text>
+                                </TouchableOpacity>
+
+                                {/* 🏢 Venue Name - user must fill this manually */}
+                                <Animated.View
+                                    entering={FadeInDown.delay(100).duration(1000).springify()}
+                                    className="bg-black/5 p-5 rounded-2xl w-full mb-2"
+                                >
+                                    <TextInput
+                                        placeholder="Venue Name"
+                                        value={eventData.location.venue}
+                                        placeholderTextColor={'gray'}
+                                        onChangeText={(text) => handleLocationChange("venue", text)}
+                                        ref={inputRefs.venue}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => inputRefs.city.current?.focus()}
+                                    />
+                                    {eventData.location.area !== "" && (
+                                        <Text className="text-gray-500 text-xs mt-1">Detected area: {eventData.location.area}</Text>
+                                    )}
                                 </Animated.View>
-                                <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                                    <TextInput placeholder="City"
-                                               value={eventData.location.city}
-                                               placeholderTextColor={'gray'}
-                                               onChangeText={(text) => handleLocationChange("city", text)}
-                                               ref={inputRefs.city}
-                                               returnKeyType="next"
-                                               onSubmitEditing={()=>inputRefs.state.current?.focus()} />
+
+                                {/* 🏙️ City */}
+                                <Animated.View
+                                    entering={FadeInDown.delay(200).duration(1000).springify()}
+                                    className="bg-black/5 p-5 rounded-2xl w-full mb-2"
+                                >
+                                    <TextInput
+                                        placeholder="City"
+                                        value={eventData.location.city}
+                                        placeholderTextColor={'gray'}
+                                        onChangeText={(text) => handleLocationChange("city", text)}
+                                        ref={inputRefs.city}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => inputRefs.state.current?.focus()}
+                                    />
                                 </Animated.View>
-                                <Animated.View entering={FadeInDown.delay(300).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                                    <TextInput placeholder="State"
-                                               value={eventData.location.state}
-                                               placeholderTextColor={'gray'}
-                                               onChangeText={(text) => handleLocationChange("state", text)}
-                                               ref={inputRefs.state}
-                                               returnKeyType="next"
-                                               onSubmitEditing={()=>inputRefs.pincode.current?.focus()} />
+
+                                {/* 🗺️ State */}
+                                <Animated.View
+                                    entering={FadeInDown.delay(300).duration(1000).springify()}
+                                    className="bg-black/5 p-5 rounded-2xl w-full mb-2"
+                                >
+                                    <TextInput
+                                        placeholder="State"
+                                        value={eventData.location.state}
+                                        placeholderTextColor={'gray'}
+                                        onChangeText={(text) => handleLocationChange("state", text)}
+                                        ref={inputRefs.state}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => inputRefs.pincode.current?.focus()}
+                                    />
                                 </Animated.View>
-                                <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
+
+                                {/* 🧾 Pincode */}
+                                <Animated.View
+                                    entering={FadeInDown.delay(400).duration(1000).springify()}
+                                    className="bg-black/5 p-5 rounded-2xl w-full mb-2"
+                                >
                                     <TextInput
                                         placeholder="Pincode"
                                         placeholderTextColor={'gray'}
                                         keyboardType="numeric"
-                                        value={eventData.location.pincode.toString()} // Convert number to string for input
-                                        onChangeText={(text) => handleLocationChange("pincode", Number(text) || 0)} // Convert back to number
+                                        value={eventData.location.pincode.toString()}
+                                        onChangeText={(text) =>
+                                            handleLocationChange("pincode", Number(text) || 0)
+                                        }
                                         ref={inputRefs.pincode}
                                         returnKeyType="next"
-                                        onSubmitEditing={()=>inputRefs.mapLink.current?.focus()}
+                                        onSubmitEditing={() => inputRefs.mapLink.current?.focus()}
                                     />
                                 </Animated.View>
-                                <Animated.View entering={FadeInDown.delay(500).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full ">
-                                    <TextInput placeholder="Google Map Link"
-                                               value={eventData.location.mapLink}
-                                               placeholderTextColor={'gray'}
-                                               onChangeText={(text) => handleLocationChange("mapLink", text)}
-                                               ref={inputRefs.mapLink}
-                                               returnKeyType="done"
-                                               onSubmitEditing={nextStep}
+
+                                {/* 🌍 Google Maps Link */}
+                                <Animated.View
+                                    entering={FadeInDown.delay(500).duration(1000).springify()}
+                                    className="bg-black/5 p-5 rounded-2xl w-full"
+                                >
+                                    <TextInput
+                                        placeholder="Google Map Link"
+                                        value={eventData.location.mapLink}
+                                        placeholderTextColor={'gray'}
+                                        onChangeText={(text) => handleLocationChange("mapLink", text)}
+                                        ref={inputRefs.mapLink}
+                                        returnKeyType="done"
+                                        onSubmitEditing={nextStep}
                                     />
                                 </Animated.View>
                             </View>
                         )}
+
 
                         {step === 3 && (
                             <View className="flex items-center space-y-4">
@@ -356,40 +394,32 @@ const EventForm = () => {
                                             onChange={handleDateChange}
                                         />
                                     )}
-                                    <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
-                                        <TextInput
-                                            placeholder="No. of Seats"
-                                            keyboardType="numeric"
-                                            value={eventData.noOfSeats.toString()}
-                                            onChangeText={(text) => handleChange("noOfSeats", Number(text) || 0)}
-                                            ref={inputRefs.noOfSeats}
-                                            returnKeyType="next"
-                                            onSubmitEditing={() => inputRefs.price.current?.focus()}
-                                        />
-                                    </Animated.View>
-                                </Animated.View>
-                                {/*<Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">*/}
-                                {/*  <TextInput placeholder="Image URL"*/}
-                                {/*             value={eventData.image}*/}
-                                {/*             placeholderTextColor={'gray'}*/}
-                                {/*             onChangeText={(text) => handleChange("image", text)}*/}
-                                {/*             ref={inputRefs.image}*/}
-                                {/*             returnKeyType="next"*/}
-                                {/*             onSubmitEditing={()=>inputRefs.category.current?.focus()}*/}
-                                {/*  />*/}
-                                {/*</Animated.View>*/}
 
-                                {/*<Animated.View entering={FadeInDown.delay(500).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">*/}
-                                {/*  <TextInput*/}
-                                {/*      placeholder="Price"*/}
-                                {/*      keyboardType="numeric"*/}
-                                {/*      value={eventData.price.toString()}*/}
-                                {/*      onChangeText={(text) => handleChange("price", Number(text) || 0)}*/}
-                                {/*      ref={inputRefs.price}*/}
-                                {/*      returnKeyType="next"*/}
-                                {/*      onSubmitEditing={() => inputRefs.category.current?.focus()}*/}
-                                {/*  />*/}
-                                {/*</Animated.View>*/}
+                                </Animated.View>
+                                <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
+                                    <TextInput
+                                        placeholder="No. of Seats"
+                                        keyboardType="numeric"
+                                        value={eventData.noOfSeats.toString()}
+                                        onChangeText={(text) => handleChange("noOfSeats", Number(text) || 0)}
+                                        ref={inputRefs.noOfSeats}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => inputRefs.price.current?.focus()}
+                                    />
+                                </Animated.View>
+                                <Animated.View entering={FadeInDown.delay(500).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
+                                    <TextInput
+                                        placeholder="Ticket Price (in ₹)"
+                                        keyboardType="numeric"
+                                        value={eventData.price.toString()}
+                                        onChangeText={(text) => handleChange("price", Number(text) || 0)}
+                                        ref={inputRefs.price}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => inputRefs.image.current?.focus()}
+                                        placeholderTextColor={'gray'}
+                                    />
+                                </Animated.View>
+
 
                                 <Animated.View entering={FadeInDown.delay(300).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">
                                     <TextInput
@@ -399,70 +429,69 @@ const EventForm = () => {
                                         placeholderTextColor={'gray'}
                                         ref={inputRefs.image}
                                         returnKeyType="next"
-                                        onSubmitEditing={() => inputRefs.noOfSeats.current?.focus()}
+                                        onSubmitEditing={() => inputRefs.category.current?.focus()}
                                     />
                                 </Animated.View>
-                                {/*<Animated.View entering={FadeInDown.delay(300).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-5">*/}
-                                {/*  <TextInput placeholder="Category"*/}
-                                {/*             value={eventData.category}*/}
-                                {/*             placeholderTextColor={'gray'}*/}
-                                {/*             onChangeText={(text) => handleChange("category", text)}*/}
-                                {/*             ref={inputRefs.category}*/}
-                                {/*             returnKeyType="done"*/}
-                                {/*             onSubmitEditing={Keyboard.dismiss}*/}
-                                {/*  />*/}
-                                {/*</Animated.View>*/}
+
                                 <Animated.View entering={FadeInDown.delay(600).duration(1000).springify()} className="z-50 w-full">
                                     <DropDownPicker
                                         open={open}
-                                        value={category}
+                                        value={eventData.category}
                                         items={items}
                                         setOpen={setOpen}
-                                        setValue={(callback) => {
-                                            const value = callback(category);
-                                            setCategory(value);
-                                            handleChange("category", value);
-                                        }}
+                                        setValue={setCategory}
+
                                         setItems={setItems}
-                                        placeholder="Select Category"
+                                        placeholder="Select Event Category"
+                                        containerStyle={{ height: 60, zIndex: 3000 }}
+                                        style={{
+                                            backgroundColor: '#f3f4f6',
+                                            borderRadius: 16,
+                                            paddingHorizontal: 16,
+                                            paddingVertical: 12,
+                                        }}
+                                        labelStyle={{
+                                            fontFamily: 'Nunito-Bold',
+                                            fontSize: 16,
+                                            color: 'black',
+                                        }}
+                                        textStyle={{
+                                            fontFamily: 'Nunito-Regular',
+                                            fontSize: 16,
+                                            color: '#111827',
+                                        }}
+                                        dropDownContainerStyle={{
+                                            backgroundColor: '#f9fafb',
+                                            borderRadius: 12,
+                                        }}
                                         listMode="SCROLLVIEW"
-                                        dropDownContainerStyle={{ backgroundColor: "#e5e5e5" }}
-                                        style={{ backgroundColor: "white", borderColor: "#ccc" }}
-                                        textStyle={{ color: "black" }}
                                     />
+
                                 </Animated.View>
                             </View>
                         )}
 
-                        <View className="flex-row justify-between items-center mt-6">
+                        <View className="flex-row justify-between mt-6">
                             {step > 1 && (
-                                <TouchableOpacity onPress={prevStep} className="px-5 py-3 bg-gray-300 rounded-lg">
-                                    <Text className="text-black">Back</Text>
+                                <TouchableOpacity onPress={prevStep} className="bg-gray-300 px-4 py-2 rounded-xl">
+                                    <Text className="text-gray-700">⬅ Back</Text>
                                 </TouchableOpacity>
                             )}
-
-
-                            {step < 3 ? (
-                                <TouchableOpacity onPress={nextStep} className="px-5 py-3 bg-blue-500 rounded-lg ml-auto">
-                                    <Text className="text-white">Next</Text>
+                            {step < 3 && (
+                                <TouchableOpacity onPress={nextStep} className="bg-blue-500 px-4 py-2 rounded-xl">
+                                    <Text className="text-white">Next ➡</Text>
                                 </TouchableOpacity>
-                            ) : (
-                                // <TouchableOpacity onPress={handleSubmit} className="px-5 py-3 bg-green-500 rounded-lg ml-auto">
-                                //   <Text className="text-white">Submit</Text>
-                                // </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={handleSubmit}
-                                    disabled={!isFormComplete()}
-                                    className={`bg-blue-600 p-4 rounded-xl ${!isFormComplete() ? "opacity-50" : "opacity-100"}`}
-                                >
-                                    <Text className="text-white text-center text-lg font-bold">Submit</Text>
+                            )}
+                            {step === 3 && (
+                                <TouchableOpacity onPress={handleSubmit} className="bg-green-500 px-4 py-2 rounded-xl">
+                                    <Text className="text-white">✅ Submit</Text>
                                 </TouchableOpacity>
-
                             )}
                         </View>
 
+
                     </View>
-                </ScrollView>
+                </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
