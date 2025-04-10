@@ -51,7 +51,7 @@ export const rsvpEvent = async (req, res) => {
 export const cancelRsvp = async (req, res) => {
     try {
         const { eventId } = req.params;
-        const userId = req.user;
+        const userId = req.user.id;
 
         const event = await Event.findById(eventId);
         if (!event) return res.status(404).json({ error: "Event not found" });
@@ -71,13 +71,13 @@ export const cancelRsvp = async (req, res) => {
 
 export const getMyBookedEvents = async (req, res) => {
     try {
-        const userId = req.user;
+        const userId = req.user.id;
 
         // Find user and populate the booked events
         const user = await User.findById(userId).populate("bookedEvents");
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        res.json({ bookedEvents: user.bookedEvents });
+        res.json(user.bookedEvents);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch booked events" });
     }

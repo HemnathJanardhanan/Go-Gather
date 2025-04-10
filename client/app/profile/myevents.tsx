@@ -105,7 +105,9 @@ const MyEventsScreen = () => {
             </View>
         </TouchableOpacity>
     );
-
+    if(loading) {
+        return <LoadingScreen />;
+    }
     return (
 
             <SafeAreaView className="flex-1 bg-gray-100 p-5">
@@ -119,16 +121,23 @@ const MyEventsScreen = () => {
                 </View>
 
                 {/* Loading Indicator */}
-                {loading ? (
-                    <ActivityIndicator size="large" color="#191d31" className="mt-10" />
-                ) : (
+                {events.length === 0 ? (
+                        <View className="flex-1 justify-center items-center mt-20">
+                            <Text className="text-lg text-gray-500 text-center">
+                                You haven't hosted any events yet.
+                            </Text>
+                            <Text className="text-sm text-gray-400 mt-2 text-center">
+                                Tap the "+" button or go to the Create tab to host your first event!
+                            </Text>
+                        </View>
+                    ) :(
                     <FlatList
                         data={events}
                         renderItem={renderEvent}
                         keyExtractor={(item) => item.id}
                         showsVerticalScrollIndicator={false}
-                    />
-                )}
+                    />)
+                }
             </SafeAreaView>
 
 

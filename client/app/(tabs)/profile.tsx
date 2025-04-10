@@ -89,7 +89,7 @@ const Profile = () => {
           </View>
 
           <View className='flex flex-col mt-10'>
-            <SettingsItem icon={icons.calendar} title="My Bookings" onPress={() => router.push('/events/bookings') } />
+            <SettingsItem icon={icons.calendar} title="My Bookings" onPress={() => router.push('/profile/myBookings') } />
             <SettingsItem icon={icons.calendar} title="My Events" onPress={() => router.push('/profile/myevents')  }/>
           </View>
 
