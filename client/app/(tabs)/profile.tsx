@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, ImageSourcePropType, Alert } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,13 +7,21 @@ import { ScrollView } from 'react-native';
 import icons from '@/constants/icons';
 import { settings } from '@/constants/data';
 import images from '@/constants/images';
-
+import axios from "axios";
+import Constants from "expo-constants";
+const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
 interface SettingsItemProps {
   icon: ImageSourcePropType;
   title: string;
   onPress?: () => void;
   textStyle?: string;
   showArrow?: boolean;
+}
+
+interface UserProfile {
+  name: string;
+  email: string;
+  profilePhoto?: string;
 }
 
 const SettingsItem = ({ icon, title, onPress, textStyle, showArrow = true }: SettingsItemProps) => (
@@ -28,6 +36,25 @@ const SettingsItem = ({ icon, title, onPress, textStyle, showArrow = true }: Set
 
 const Profile = () => {
   const router = useRouter();
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (!token) return;
+        console.log(`${API_URL}/users/profile`)
+        const res = await axios.get<UserProfile>(`${API_URL}/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUser(res.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+    fetchUserProfile();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -51,16 +78,13 @@ const Profile = () => {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='pb-32 px-7'>
           <View className='flex flex-row items-center justify-between mt-5'>
             <Text className='text-xl font-nunito-bold'>Profile</Text>
-            <Image source={icons.bell} className='size-5' />
           </View>
 
           <View className='flex-row justify-center flex mt-5'>
             <View className='flex flex-col items-center relative mt-5'>
-              <Image source={images.avatar} className='size-44 rounded-full' />
-              <TouchableOpacity className='absolute bottom-11 right-2'>
-                <Image source={icons.edit} className='size-9' />
-              </TouchableOpacity>
-              <Text className='text-2xl font-nunito-bold'>Demo User</Text>
+              <Image source={user?.profilePhoto ? { uri: user.profilePhoto } : images.avatar} className='size-44 rounded-full' />
+
+              <Text className='text-2xl font-nunito-bold'>{user?.name||"Test"}</Text>
             </View>
           </View>
 

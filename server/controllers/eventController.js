@@ -108,12 +108,12 @@ export const deleteEvent = async (req, res) => {
 // 📌 Get My Hosted Events
 export const getMyHostedEvents = async (req, res) => {
     try {
-        const userId = req.user;
+        const userId = req.user.id;
 
         // Find events created by the logged-in user
         const hostedEvents = await Event.find({ createdBy: userId });
 
-        res.json({ hostedEvents });
+        res.json(hostedEvents);
     } catch (error) {
         console.error("Error fetching hosted events:", error);
         res.status(500).json({ error: "Failed to fetch hosted events" });

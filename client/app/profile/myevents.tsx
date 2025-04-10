@@ -10,17 +10,29 @@ import LoadingScreen from "@/app/LoadingScreen";
 import {router} from "expo-router";
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://192.168.29.133:3000";
 
-type Event = {
-    id: string;
+interface Location {
+    venue: string;
+    area: string;
+    city: string;
+    state: string;
+    pincode: number;
+    mapLink: string;// Ensure this is a number
+}
+
+interface Event {
+    id:string;
     title: string;
-    location: {
-        venue: string;
-        city: string;
-    };
+    description: string;
+    location: Location;
     date: string;
     image: string;
+    noOfSeats: number;
+    remainingSeats: number;
     price: number;
-};
+    category: string;
+    attendees: any;
+}
+
 
 const MyEventsScreen = () => {
     const [events, setEvents] = useState<Event[]>([]);
@@ -40,8 +52,13 @@ const MyEventsScreen = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
+                const normalizedEvents = response.data.hostedEvents.map((event:any) => ({
+                    ...event,
+                    id: (event as any)._id, // rename _id to id
+                }));
+                setEvents(normalizedEvents);
+                setEvents(normalizedEvents);
 
-                setEvents(response.data);
             } catch (error) {
                 console.error("Error fetching hosted events:", error);
                 Alert.alert("Error", "Failed to load hosted events. Please try again.");
@@ -74,7 +91,7 @@ const MyEventsScreen = () => {
                 <View className="p-4">
                     <Text className="text-lg font-nunito-bold text-black">{item.title}</Text>
                     <Text className="text-gray-600 text-sm mt-1">
-                        {item.location.venue}, {item.location.city}
+                        {item.location?.venue||"Unkown"}, {item.location?.city||"Unkown"}
                     </Text>
 
                     {/* Date & Price */}
