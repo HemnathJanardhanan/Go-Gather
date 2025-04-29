@@ -1,5 +1,5 @@
 
-import { View, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator, Alert, Modal } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity,TouchableWithoutFeedback, Alert, Modal } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, router } from "expo-router";
 import { StatusBar } from "react-native";
@@ -10,9 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import CelebrateAnimation from "@/components/CelebrateAnimation";
 import LoadingScreen from "@/app/LoadingScreen";
-
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import RsvpModal from "@/components/RsvpModal";
 
 
 
@@ -46,7 +44,7 @@ const EventDetails = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [seats, setSeats] = useState(1);
     const [success, setSuccess] = useState(false);
-    const [refreshFlag, setRefreshFlag] = useState(false);
+
     const fetchEventDetails = async () => {
         setLoading(true);
         try {
@@ -64,12 +62,6 @@ const EventDetails = () => {
         fetchEventDetails();
     }, [id]);
 
-    useFocusEffect(
-
-        useCallback(() => {
-            fetchEventDetails(); // 👈 This is your API call to get latest event info
-        }, [refreshFlag])
-    );
     const registerForPushNotifications = async () => {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
@@ -124,12 +116,8 @@ const EventDetails = () => {
                 },
                 trigger: null, // Triggers immediately
             });
-
-            //Alert.alert("Success", "RSVP confirmed!");
             setModalVisible(false);
             setSuccess(true);
-            setTimeout(async () => {setRefreshFlag(true)},3000)
-
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -202,9 +190,17 @@ const EventDetails = () => {
                 </View>
             </ScrollView>
 
-            <CelebrateAnimation visible={success} onFinish={() => setSuccess(false)} />
-
-            <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
+            <CelebrateAnimation visible={success} onFinish={() => setSuccess(false)}  />
+            {/*<RsvpModal*/}
+            {/*    modalVisible={modalVisible}*/}
+            {/*    setModalVisible={setModalVisible}*/}
+            {/*    seats={seats}*/}
+            {/*    decreaseSeats={decreaseSeats}*/}
+            {/*    increaseSeats={increaseSeats}*/}
+            {/*    handleRSVP={handleRSVP}*/}
+            {/*    noOfSeats={event.noOfSeats}*/}
+            {/*/>*/}
+            <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
                 <View className="flex-1 justify-end bg-black/50">
                     <View className="bg-white p-6 rounded-t-3xl shadow-lg">
                         <Text className="text-xl font-bold text-gray-900">Confirm RSVP</Text>

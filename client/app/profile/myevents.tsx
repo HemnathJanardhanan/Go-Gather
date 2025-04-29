@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import {View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert, Modal} from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import {View, Text, FlatList, Image, TouchableOpacity, Alert, Modal} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Constants from "expo-constants";

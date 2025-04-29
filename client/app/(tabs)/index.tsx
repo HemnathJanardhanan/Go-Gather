@@ -51,6 +51,9 @@ export default function Index() {
     const [freeEvents,setFreeEvents] = useState<EventData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+
+    const filteredEvents = selectedCategory === 'All' ? events : events.filter(event => event.category === selectedCategory);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -200,9 +203,9 @@ export default function Index() {
                         </View>
 
                         {/* Filters */}
-                        <Filter />
+                        <Filter selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory}/>
                         <FlatList
-                            data={events}
+                            data={filteredEvents}
                             renderItem={({ item }) => (
                                 <FeaturedCard
                                     id={item.id}
@@ -219,7 +222,8 @@ export default function Index() {
                             horizontal
                             showsHorizontalScrollIndicator={false}
                             bounces={false}
-                            contentContainerClassName="flex gap-5 mt-5"
+                            contentContainerStyle={{ gap: 20, marginTop: 20 }}
+                            // contentContainerClassName="flex gap-5 mt-5"
                         />
                     </View>
 
